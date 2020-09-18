@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using System.Windows.Input;
 using TagLib;
 
 namespace MusicPlayer.Models
@@ -21,5 +23,8 @@ namespace MusicPlayer.Models
         }
         public string Lyrics { get; set; }
         public IPicture AlbumArt { get; set; }
+
+        
+        
     }
 }
