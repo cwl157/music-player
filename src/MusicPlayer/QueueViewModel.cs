@@ -153,17 +153,6 @@ namespace MusicPlayer
             set { _playingProgress = value; OnPropertyChanged(); }
         }
 
-        private BitmapImage _albumArtImage;
-        public BitmapImage AlbumArtImage
-        {
-            get { return _albumArtImage; }
-            set
-            {
-                _albumArtImage = value;
-                OnPropertyChanged();
-            }
-        }
-
         private string _elapsedTime;
         public string ElapsedTime
         {
@@ -235,7 +224,6 @@ namespace MusicPlayer
                 _playingIndex = SelectedIndex;
                 ArtistAlbumInfo = PlayingSong.Artist + " - " + PlayingSong.Album;
                 TrackTitleInfo = PlayingSong.TrackNumber + ". " + PlayingSong.Title;
-                AlbumArtImage = LoadImage(PlayingSong.AlbumArt.Data.Data);
             }
             StartTimers();
             _player.Play(new Uri(PlayingSong.FilePath));
@@ -339,17 +327,19 @@ namespace MusicPlayer
                 if (f.Extension.ToLower() == ".mp3")
                 {
                     var tfile = TagLib.File.Create(f.FullName);
-                    songs.Add(new Song()
+                    Song s = new Song();
+                    s.Artist = tfile.Tag.FirstPerformer;
+                    s.Album = tfile.Tag.Album;
+                    s.Title = tfile.Tag.Title;
+                    s.TrackNumber = (int)tfile.Tag.Track;
+                    s.Duration = tfile.Properties.Duration;
+                    s.FilePath = f.FullName;
+                    s.Lyrics = tfile.Tag.Lyrics;
+                    if (tfile.Tag.Pictures.Length > 0)
                     {
-                        Artist = tfile.Tag.FirstPerformer,
-                        Album = tfile.Tag.Album,
-                        Title = tfile.Tag.Title,
-                        TrackNumber = (int)tfile.Tag.Track,
-                        Duration = tfile.Properties.Duration,
-                        FilePath = f.FullName,
-                        Lyrics = tfile.Tag.Lyrics,
-                        AlbumArt = tfile.Tag.Pictures[0]
-                    });
+                        s.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+                    }
+                    songs.Add(s);
                 }
             }
 

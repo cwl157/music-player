@@ -33,7 +33,7 @@
         <ScrollViewer Grid.Column="2" Margin="355,94,10,80">
             <TextBlock x:Name="LyricsTxtBlock" TextWrapping="Wrap" Text="{Binding PlayingSong.Lyrics}"/>
         </ScrollViewer>
-        <Image x:Name="AlbumArtImg" Source="{Binding AlbumArtImage}" Grid.Column="1" HorizontalAlignment="Left" Height="256" Margin="25,273,0,0" VerticalAlignment="Top" Width="256" Grid.ColumnSpan="2"/>
+        <Image x:Name="AlbumArtImg" Source="{Binding PlayingSong.AlbumArt}" Grid.Column="1" HorizontalAlignment="Left" Height="256" Margin="25,273,0,0" VerticalAlignment="Top" Width="256" Grid.ColumnSpan="2"/>
         <Button x:Name="ClearQueueBtn" Command="{Binding ClearQueueCommand}" Content="Clear Queue" Grid.Column="2" HorizontalAlignment="Left" Margin="619,11,0,0" VerticalAlignment="Top" Width="96" />
         <Button x:Name="StopBtn" Content="Stop" Grid.Column="2" HorizontalAlignment="Left" Margin="570,553,0,0" VerticalAlignment="Top" FontSize="20" Command="{Binding StopSong}"/>
         <Label x:Name="NowPlayingLabel" Content="{Binding TrackTitleInfo}" Grid.Column="2" HorizontalAlignment="Left" Margin="349,61,0,0" VerticalAlignment="Top" FontSize="14" Width="358" Height="28"/>

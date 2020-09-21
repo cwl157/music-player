@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Windows.Input;
-using TagLib;
+using System.Windows.Media.Imaging;
 
 namespace MusicPlayer.Models
 {
@@ -22,7 +18,7 @@ namespace MusicPlayer.Models
             }
         }
         public string Lyrics { get; set; }
-        public IPicture AlbumArt { get; set; }
+        public BitmapImage AlbumArt { get; set; }
 
         
         
