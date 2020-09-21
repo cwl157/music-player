@@ -4,7 +4,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
-namespace MusicPlayer
+namespace MusicPlayer.Infrastructure
 {
     public class CommandHandler : ICommand
     {

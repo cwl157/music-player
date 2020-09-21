@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
 
-namespace MusicPlayer.Models
+namespace MusicPlayer.Model
 {
     public class Song
     {

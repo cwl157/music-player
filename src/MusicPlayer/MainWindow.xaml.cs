@@ -1,4 +1,4 @@
-﻿using MusicPlayer.Models;
+﻿using MusicPlayer.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MusicPlayer.ViewModels;
 
 namespace MusicPlayer
 {
@@ -28,8 +29,8 @@ namespace MusicPlayer
         {
             InitializeComponent();
             Player.LoadedBehavior = MediaState.Manual;
-
-            var vm = new QueueViewModel(this);
+            IQueueLoader ql = new FileQueueLoader();
+            var vm = new QueueViewModel(this, ql);
             DataContext = vm;
         }
 

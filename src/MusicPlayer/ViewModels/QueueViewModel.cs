@@ -1,4 +1,4 @@
-﻿using MusicPlayer.Models;
+﻿using MusicPlayer.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,17 +11,20 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Timers;
+using MusicPlayer.Infrastructure;
 
-namespace MusicPlayer
+namespace MusicPlayer.ViewModels
 {
     public class QueueViewModel : INotifyPropertyChanged
     {
         private Timer _incrementPlayingProgress;
         private Timer _findSongEnd;
         private int _playingIndex;
-        private IMusicPlayer _player;
+        private readonly IMusicPlayer _player;
+        private readonly IQueueLoader _fileQueueLoader;
         private double _seconds;
-        public QueueViewModel(IMusicPlayer m)
+
+        public QueueViewModel(IMusicPlayer m, IQueueLoader ql)
         {
             if (DesignerProperties.GetIsInDesignMode(
                 new System.Windows.DependencyObject())) return;
@@ -31,6 +34,7 @@ namespace MusicPlayer
             _playingSong = new Song();
             QueueInfo = "";
             _player = m;
+            _fileQueueLoader = ql;
             ElapsedTime = "00:00 / 00:00";
             _incrementPlayingProgress = new Timer();
             _incrementPlayingProgress.Interval = 1000;
@@ -173,7 +177,7 @@ namespace MusicPlayer
         }
         private void AddToQueueAction()
         {
-            var songs = Load(QueueFilePath);
+            var songs = _fileQueueLoader.Load(QueueFilePath);
             foreach (Song s in songs)
             {
                 _currentQueue.Add(s);
@@ -318,54 +322,6 @@ namespace MusicPlayer
         #endregion
 
         #region privateUtilities
-        private List<Song> Load(string filePath)
-        {
-            DirectoryInfo dir = new DirectoryInfo(filePath);
-            List<Song> songs = new List<Song>();
-            foreach (FileInfo f in dir.GetFiles())
-            {
-                if (f.Extension.ToLower() == ".mp3")
-                {
-                    var tfile = TagLib.File.Create(f.FullName);
-                    Song s = new Song();
-                    s.Artist = tfile.Tag.FirstPerformer;
-                    s.Album = tfile.Tag.Album;
-                    s.Title = tfile.Tag.Title;
-                    s.TrackNumber = (int)tfile.Tag.Track;
-                    s.Duration = tfile.Properties.Duration;
-                    s.FilePath = f.FullName;
-                    s.Lyrics = tfile.Tag.Lyrics;
-                    if (tfile.Tag.Pictures.Length > 0)
-                    {
-                        s.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
-                    }
-                    songs.Add(s);
-                }
-            }
-
-            songs = songs.OrderBy(s => s.TrackNumber).ToList();
-            
-            return songs;
-        }
-
-        private static BitmapImage LoadImage(byte[] imageData)
-        {
-            if (imageData == null || imageData.Length == 0) return null;
-            var image = new BitmapImage();
-            using (var mem = new MemoryStream(imageData))
-            {
-                mem.Position = 0;
-                image.BeginInit();
-                image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-                image.CacheOption = BitmapCacheOption.OnLoad;
-                image.UriSource = null;
-                image.StreamSource = mem;
-                image.EndInit();
-            }
-            image.Freeze();
-            return image;
-        }
-
         private void StopTimers()
         {
             _incrementPlayingProgress.Stop();
