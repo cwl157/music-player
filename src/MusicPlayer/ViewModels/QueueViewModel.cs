@@ -220,7 +220,6 @@ namespace MusicPlayer.ViewModels
         }
         private void PlaySongAction()
         {
-            Debug.WriteLine(SelectedSong.Artist + " - " + SelectedSong.Album + " - " + SelectedSong.Title);
             if (PlayingSong.FilePath != SelectedSong.FilePath)
             {
                 StopSongAction();

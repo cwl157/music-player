@@ -6,6 +6,7 @@ namespace MusicPlayer
 {
     public interface IMusicPlayer
     {
+        string State { get; }
         void Play(Uri filePath);
         void Pause();
         void Stop();

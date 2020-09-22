@@ -34,6 +34,8 @@ namespace MusicPlayer
             DataContext = vm;
         }
 
+        #region IMusicPlayer
+        public string State => "";
         public void Play(Uri filePath)
         {
 
@@ -70,5 +72,6 @@ namespace MusicPlayer
         {
             return Player.Position >= Player.NaturalDuration;
         }
+        #endregion
     }
 }
