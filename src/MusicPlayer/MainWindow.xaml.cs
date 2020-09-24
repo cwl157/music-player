@@ -25,13 +25,20 @@ namespace MusicPlayer
     /// </summary>
     public partial class MainWindow : Window, IMusicPlayer
     {
+        private QueueViewModel _vm;
         public MainWindow()
         {
             InitializeComponent();
             Player.LoadedBehavior = MediaState.Manual;
             IQueueLoader ql = new FileQueueLoader();
-            var vm = new QueueViewModel(this, ql);
-            DataContext = vm;
+            _vm = new QueueViewModel(this, ql);
+            //var vm = new QueueViewModel(this, ql);
+            DataContext = _vm;
+        }
+
+        public void ListViewItem_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            _vm.PlaySong.Execute(null);
         }
 
         #region IMusicPlayer
@@ -58,9 +65,9 @@ namespace MusicPlayer
             
         }
 
-        public void FastForward(int seconds)
+        public void FastForward(double milliseconds)
         {
-            Player.Position += TimeSpan.FromSeconds(seconds);
+            Player.Position += TimeSpan.FromMilliseconds(milliseconds);
         }
        
         public void Rewind(int seconds)

@@ -15,7 +15,7 @@ namespace MusicPlayer.Tests
             _state = "unknown";
         }
 
-        public void FastForward(int seconds)
+        public void FastForward(double milliseconds)
         {
             Debug.WriteLine("FastForward");
             _state = "FastForward";

@@ -274,7 +274,7 @@ namespace MusicPlayer.ViewModels
         }
         private void FastForwardAction()
         {
-            _player.FastForward(10);
+            _player.FastForward(10000);
 
             _seconds += 10000;
             PlayingProgress += 10000;
@@ -311,7 +311,7 @@ namespace MusicPlayer.ViewModels
         }
 
         #endregion
-        
+
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)

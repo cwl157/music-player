@@ -7,6 +7,11 @@
         xmlns:local="clr-namespace:MusicPlayer"
         mc:Ignorable="d"
         Title="Music Player" Height="640" Width="800">
+    <Window.Resources>
+        <Style TargetType="ListViewItem">
+            <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="9*"/>

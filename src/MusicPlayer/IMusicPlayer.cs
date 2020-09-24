@@ -10,7 +10,7 @@ namespace MusicPlayer
         void Play(Uri filePath);
         void Pause();
         void Stop();
-        void FastForward(int seconds);
+        void FastForward(double milliseconds);
         void Rewind(int seconds);
         bool IsDone();
     }
