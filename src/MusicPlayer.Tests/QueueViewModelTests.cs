@@ -65,7 +65,7 @@ namespace MusicPlayer.Tests
             Assert.AreEqual("Title", vm.PlayingSong.Title);
             Assert.AreEqual("Test Album", vm.PlayingSong.Album);
             // Assert viewmodel state
-            Assert.AreEqual("Test - Test Album", vm.ArtistAlbumInfo);
+            Assert.AreEqual("Test - Test Album [2018]", vm.ArtistAlbumInfo);
             Assert.AreEqual("1. Title", vm.TrackTitleInfo);
         }
 

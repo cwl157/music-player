@@ -18,7 +18,8 @@ namespace MusicPlayer.Tests
                 Album = "Test Album",
                 TrackNumber = 1,
                 Duration = TimeSpan.FromSeconds(10),
-                FilePath = @"C:\tmp\1"
+                FilePath = @"C:\tmp\1",
+                Year = "2018"
             });
             tmp.Add(new Song()
             {
@@ -27,7 +28,8 @@ namespace MusicPlayer.Tests
                 Album = "Test Album",
                 TrackNumber = 2,
                 Duration = TimeSpan.FromSeconds(20),
-                FilePath = @"C:\tmp\2"
+                FilePath = @"C:\tmp\2",
+                Year = "2019"
             });
 
             return tmp;

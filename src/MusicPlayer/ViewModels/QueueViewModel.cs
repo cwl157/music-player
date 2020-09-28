@@ -225,7 +225,7 @@ namespace MusicPlayer.ViewModels
                 StopSongAction();
                 PlayingSong = SelectedSong;
                 _playingIndex = SelectedIndex;
-                ArtistAlbumInfo = PlayingSong.Artist + " - " + PlayingSong.Album;
+                ArtistAlbumInfo = PlayingSong.Artist + " - " + PlayingSong.Album + " [" + PlayingSong.Year + "]";
                 TrackTitleInfo = PlayingSong.TrackNumber + ". " + PlayingSong.Title;
             }
             StartTimers();

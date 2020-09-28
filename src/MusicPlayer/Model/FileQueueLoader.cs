@@ -35,6 +35,7 @@ namespace MusicPlayer.Model
                     {
                         s.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
                     }
+                    s.Year = tfile.Tag.Year.ToString();
                     songs.Add(s);
                 }
             }
