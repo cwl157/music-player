@@ -6,12 +6,12 @@ namespace MusicPlayer
 {
     public interface IMusicPlayer
     {
-        string State { get; }
         void Play(Uri filePath);
+        void Play();
         void Pause();
         void Stop();
         void FastForward(double milliseconds);
-        void Rewind(int seconds);
+        void Rewind(double milliseconds);
         bool IsDone();
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Media.Imaging;
 
-namespace MusicPlayer.Model
+namespace MusicPlayer.Services
 {
     public class FileQueueLoader : IQueueLoader
     {

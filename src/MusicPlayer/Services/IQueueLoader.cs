@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MusicPlayer.Model
+namespace MusicPlayer.Services
 {
     public interface IQueueLoader
     {

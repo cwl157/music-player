@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MusicPlayer.ViewModels;
+using MusicPlayer.Services;
 
 namespace MusicPlayer
 {
@@ -32,7 +33,6 @@ namespace MusicPlayer
             Player.LoadedBehavior = MediaState.Manual;
             IQueueLoader ql = new FileQueueLoader();
             _vm = new QueueViewModel(this, ql);
-            //var vm = new QueueViewModel(this, ql);
             DataContext = _vm;
         }
 
@@ -42,15 +42,14 @@ namespace MusicPlayer
         }
 
         #region IMusicPlayer
-        public string State => "";
         public void Play(Uri filePath)
         {
+            Player.Source = filePath;
+            Player.Play();
+        }
 
-            if (Player.Source == null || filePath.AbsoluteUri != Player.Source.AbsoluteUri)
-            {
-                Player.Source = filePath;
-            }
-            
+        public void Play()
+        {
             Player.Play();
         }
 
@@ -70,9 +69,9 @@ namespace MusicPlayer
             Player.Position += TimeSpan.FromMilliseconds(milliseconds);
         }
        
-        public void Rewind(int seconds)
+        public void Rewind(double milliseconds)
         {
-            Player.Position -= TimeSpan.FromSeconds(seconds);
+            Player.Position -= TimeSpan.FromMilliseconds(milliseconds);
         }
 
         public bool IsDone()

@@ -12,6 +12,8 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Timers;
 using MusicPlayer.Infrastructure;
+using System.Dynamic;
+using MusicPlayer.Services;
 
 namespace MusicPlayer.ViewModels
 {
@@ -23,6 +25,15 @@ namespace MusicPlayer.ViewModels
         private readonly IMusicPlayer _player;
         private readonly IQueueLoader _fileQueueLoader;
         private double _seconds;
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public ICommand AddToQueueCommand { get; private set; }
+        public ICommand ClearQueueCommand { get; private set; }
+        public ICommand PlaySong { get; private set; }
+        public ICommand PauseSong { get; private set; }
+        public ICommand StopSong { get; private set; }
+        public ICommand FastForwardCommand { get; private set; }
+        public ICommand RewindCommand { get; private set; }
 
         public QueueViewModel(IMusicPlayer m, IQueueLoader ql)
         {
@@ -68,6 +79,14 @@ namespace MusicPlayer.ViewModels
                     }
                 });
             };
+
+            AddToQueueCommand = new CommandHandler(() => AddToQueueAction(), () => true);
+            ClearQueueCommand = new CommandHandler(() => ClearQueueAction(), () => true);
+            PlaySong = new CommandHandler(() => PlaySongAction(), () => true);
+            PauseSong = new CommandHandler(() => PauseSongAction(), () => true);
+            StopSong = new CommandHandler(() => StopSongAction(), () => true);
+            FastForwardCommand = new CommandHandler(() => FastForwardAction(), () => true);
+            RewindCommand = new CommandHandler(() => RewindAction(), () => true);
         }
 
         #region ViewBindedProperties
@@ -96,7 +115,7 @@ namespace MusicPlayer.ViewModels
             set
             {
                 _queueInfo = value;
-                OnPropertyChanged();
+                PropertyChanged(this, new PropertyChangedEventArgs("QueueInfo"));
             }
         }
 
@@ -106,7 +125,7 @@ namespace MusicPlayer.ViewModels
             set
             {
                 _artistAlbumInfo = value;
-                OnPropertyChanged();
+                PropertyChanged(this, new PropertyChangedEventArgs("ArtistAlbumInfo"));
             }
         }
 
@@ -117,7 +136,7 @@ namespace MusicPlayer.ViewModels
             set
             {
                 _trackTitleInfo = value;
-                OnPropertyChanged();
+                PropertyChanged(this, new PropertyChangedEventArgs("TrackTitleInfo"));
             }
         }
 
@@ -128,7 +147,7 @@ namespace MusicPlayer.ViewModels
             set
             {
                 _selectedSong = value;
-                OnPropertyChanged();
+                PropertyChanged(this, new PropertyChangedEventArgs("SelectedSong"));
             }
         }
 
@@ -139,7 +158,7 @@ namespace MusicPlayer.ViewModels
             set
             {
                 _playingSong = value;
-                OnPropertyChanged();
+                PropertyChanged(this, new PropertyChangedEventArgs("PlayingSong"));
             }
         }
 
@@ -147,34 +166,38 @@ namespace MusicPlayer.ViewModels
         public int SelectedIndex
         {
             get { return _selectedIndex; }
-            set { _selectedIndex = value; OnPropertyChanged(); }
+            set
+            {
+                _selectedIndex = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("SelectedIndex"));
+            }
         }
 
         private double _playingProgress;
         public double PlayingProgress
         {
             get { return _playingProgress; }
-            set { _playingProgress = value; OnPropertyChanged(); }
+            set
+            {
+                _playingProgress = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("PlayingProgress"));
+            }
         }
 
         private string _elapsedTime;
         public string ElapsedTime
         {
             get { return _elapsedTime; }
-            set { _elapsedTime = value; OnPropertyChanged(); }
+            set
+            {
+                _elapsedTime = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("ElapsedTime"));
+            }
         }
 
         #endregion
 
-        #region Commands
-        private ICommand _addToQueueCommand;
-        public ICommand AddToQueueCommand
-        {
-            get
-            {
-                return _addToQueueCommand ?? (_addToQueueCommand = new CommandHandler(() => AddToQueueAction(), () => true));
-            }
-        }
+        #region CommandActions
         private void AddToQueueAction()
         {
             var songs = _fileQueueLoader.Load(QueueFilePath);
@@ -196,28 +219,12 @@ namespace MusicPlayer.ViewModels
             }
         }
 
-        private ICommand _clearQueueCommand;
-        public ICommand ClearQueueCommand
-        {
-            get
-            {
-                return _clearQueueCommand ?? (_clearQueueCommand = new CommandHandler(() => ClearQueueAction(), () => true));
-            }
-        }
         private void ClearQueueAction()
         {
             _currentQueue.Clear();
             QueueInfo = "";
         }
 
-        private ICommand _playCommand;
-        public ICommand PlaySong
-        {
-            get
-            {
-                return _playCommand ?? (_playCommand = new CommandHandler(() => PlaySongAction(), () => true));
-            }
-        }
         private void PlaySongAction()
         {
             if (PlayingSong.FilePath != SelectedSong.FilePath)
@@ -227,34 +234,21 @@ namespace MusicPlayer.ViewModels
                 _playingIndex = SelectedIndex;
                 ArtistAlbumInfo = PlayingSong.Artist + " - " + PlayingSong.Album + " [" + PlayingSong.Year + "]";
                 TrackTitleInfo = PlayingSong.TrackNumber + ". " + PlayingSong.Title;
+                _player.Play(new Uri(PlayingSong.FilePath));
+            }
+            else
+            {
+                _player.Play();
             }
             StartTimers();
-            _player.Play(new Uri(PlayingSong.FilePath));
         }
 
-
-        private ICommand _pauseCommand;
-        public ICommand PauseSong
-        {
-            get
-            {
-                return _pauseCommand ?? (_pauseCommand = new CommandHandler(() => PauseSongAction(), () => true));
-            }
-        }
         private void PauseSongAction()
         {
             StopTimers();
             _player.Pause();
         }
 
-        private ICommand _stopCommand;
-        public ICommand StopSong
-        {
-            get
-            {
-                return _stopCommand ?? (_stopCommand = new CommandHandler(() => StopSongAction(), () => true));
-            }
-        }
         private void StopSongAction()
         {
             _player.Stop();
@@ -264,14 +258,6 @@ namespace MusicPlayer.ViewModels
             ElapsedTime = "00:00 / " + PlayingSong.DisplayDuration;
         }
 
-        private ICommand _fastforwardCommand;
-        public ICommand FastForwardCommand
-        {
-            get
-            {
-                return _fastforwardCommand ?? (_fastforwardCommand = new CommandHandler(() => FastForwardAction(), () => true));
-            }
-        }
         private void FastForwardAction()
         {
             _player.FastForward(10000);
@@ -283,17 +269,9 @@ namespace MusicPlayer.ViewModels
             ElapsedTime = displayProgress + " / " + PlayingSong.DisplayDuration;
         }
 
-        private ICommand _rewindCommand;
-        public ICommand RewindCommand
-        {
-            get
-            {
-                return _rewindCommand ?? (_rewindCommand = new CommandHandler(() => RewindAction(), () => true));
-            }
-        }
         private void RewindAction()
         {
-            _player.Rewind(10);
+            _player.Rewind(10000);
             _seconds -= 10000;
             PlayingProgress -= 10000;
             if (_seconds < 0)
@@ -312,15 +290,7 @@ namespace MusicPlayer.ViewModels
 
         #endregion
 
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-        #endregion
-
-        #region privateUtilities
+        #region TimerControls
         private void StopTimers()
         {
             _incrementPlayingProgress.Stop();

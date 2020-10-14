@@ -19,9 +19,6 @@ namespace MusicPlayer.Model
         }
         public string Lyrics { get; set; }
         public BitmapImage AlbumArt { get; set; }
-        public string Year { get; set; }
-
-        
-        
+        public string Year { get; set; } 
     }
 }

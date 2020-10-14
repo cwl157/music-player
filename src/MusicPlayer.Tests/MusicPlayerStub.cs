@@ -38,7 +38,12 @@ namespace MusicPlayer.Tests
             Debug.WriteLine("Play");
         }
 
-        public void Rewind(int seconds)
+        public void Play()
+        {
+            Debug.WriteLine("Play");
+        }
+
+        public void Rewind(double milliseconds)
         {
             Debug.WriteLine("Rewind");
         }
