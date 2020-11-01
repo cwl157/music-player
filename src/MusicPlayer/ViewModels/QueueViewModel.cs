@@ -23,7 +23,7 @@ namespace MusicPlayer.ViewModels
         private Timer _findSongEnd;
         private int _playingIndex;
         private readonly IMusicPlayer _player;
-        private readonly IQueueLoader _fileQueueLoader;
+        private SongCollection _currentQueue;
         private double _seconds;
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -35,20 +35,20 @@ namespace MusicPlayer.ViewModels
         public ICommand FastForwardCommand { get; private set; }
         public ICommand RewindCommand { get; private set; }
 
-        public QueueViewModel(IMusicPlayer m, IQueueLoader ql)
+        public QueueViewModel(IMusicPlayer m, SongCollection collection)
         {
             if (DesignerProperties.GetIsInDesignMode(
                 new System.Windows.DependencyObject())) return;
 
             _seconds = 0;
-            _currentQueue = new ObservableCollection<Song>();
+
             _playingSong = new Song();
             QueueInfo = "";
             _player = m;
-            _fileQueueLoader = ql;
             ElapsedTime = "00:00 / 00:00";
             _incrementPlayingProgress = new Timer();
             _incrementPlayingProgress.Interval = 1000;
+            _currentQueue = collection;
             _incrementPlayingProgress.Elapsed += (sender, e) =>
             {
                 _seconds += 1000;
@@ -66,10 +66,10 @@ namespace MusicPlayer.ViewModels
                     if (_player.IsDone())
                     {
                         Debug.WriteLine("Done");
-                        if (++_playingIndex < CurrentQueue.Count)
+                        if (++_playingIndex < _currentQueue.SongList.Count)
                         {
 
-                            SelectedSong = CurrentQueue[_playingIndex];
+                            SelectedSong = _currentQueue.SongList[_playingIndex];
                             PlaySongAction();
                         }
                         else
@@ -91,23 +91,8 @@ namespace MusicPlayer.ViewModels
 
         #region ViewBindedProperties
         public string QueueFilePath { get; set; }
+        public ObservableCollection<Song> SongList { get { return _currentQueue.SongList; } }
 
-        private ObservableCollection<Song> _currentQueue;
-        public ObservableCollection<Song> CurrentQueue
-        {
-            get
-            {
-                if (_currentQueue == null)
-                {
-                    return new ObservableCollection<Song>();
-                }
-                else
-                {
-                    return _currentQueue;
-                }
-            }
-        }
-        
         private string _queueInfo;
         public string QueueInfo
         {
@@ -200,28 +185,24 @@ namespace MusicPlayer.ViewModels
         #region CommandActions
         private void AddToQueueAction()
         {
-            var songs = _fileQueueLoader.Load(QueueFilePath);
-            foreach (Song s in songs)
-            {
-                _currentQueue.Add(s);
-            }
+            _currentQueue.Load(QueueFilePath);
 
-            if (_currentQueue.Count > 0)
+            if (_currentQueue.SongList.Count > 0)
             {
-                double queueDuration = _currentQueue.Sum(d => d.Duration.TotalSeconds);
+                double queueDuration = _currentQueue.TotalSeconds();
                 string format = "hh\\:mm\\:ss";
                 if (queueDuration < 3600)
                 {
                     format = "mm\\:ss";
                 }
                 TimeSpan totalDuration = TimeSpan.FromSeconds(queueDuration);
-                QueueInfo = _currentQueue.Count + " songs - " + totalDuration.ToString(format);
+                QueueInfo = _currentQueue.SongList.Count + " songs - " + totalDuration.ToString(format);
             }
         }
 
         private void ClearQueueAction()
         {
-            _currentQueue.Clear();
+            _currentQueue.SongList.Clear();
             QueueInfo = "";
         }
 

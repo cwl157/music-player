@@ -19,7 +19,7 @@
             <ColumnDefinition Width="737*"/>
         </Grid.ColumnDefinitions>
         <Button x:Name="AddToQueueBtn" Command="{Binding AddToQueueCommand}" Content="Add to Queue" HorizontalAlignment="Left" Margin="518,12,0,0" VerticalAlignment="Top" Grid.Column="2" Width="96"/>
-        <ListView x:Name="QueueView" Margin="1,59,400,331" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding CurrentQueue}" SelectedItem="{Binding SelectedSong}" SelectedIndex="{Binding SelectedIndex}">
+        <ListView x:Name="QueueView" Margin="1,59,400,331" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding SongList}" SelectedItem="{Binding SelectedSong}" SelectedIndex="{Binding SelectedIndex}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Track" DisplayMemberBinding="{Binding TrackNumber}" />

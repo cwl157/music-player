@@ -32,7 +32,8 @@ namespace MusicPlayer
             InitializeComponent();
             Player.LoadedBehavior = MediaState.Manual;
             IQueueLoader ql = new FileQueueLoader();
-            _vm = new QueueViewModel(this, ql);
+            SongCollection collection = new SongCollection(ql);
+            _vm = new QueueViewModel(this, collection);
             DataContext = _vm;
         }
 

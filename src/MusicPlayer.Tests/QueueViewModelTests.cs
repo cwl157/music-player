@@ -25,10 +25,11 @@ namespace MusicPlayer.Tests
         {
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
-            QueueViewModel vm = new QueueViewModel(mp, ql);
+            SongCollection collection = new SongCollection(ql);
+            QueueViewModel vm = new QueueViewModel(mp, collection);
 
             vm.AddToQueueCommand.Execute(null);
-            Assert.AreEqual(2, vm.CurrentQueue.Count);
+            Assert.AreEqual(2, vm.SongList.Count);
             Assert.AreEqual("2 songs - 00:30", vm.QueueInfo);
         }
 
@@ -38,11 +39,12 @@ namespace MusicPlayer.Tests
             
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
-            QueueViewModel vm = new QueueViewModel(mp, ql);
+            SongCollection collection = new SongCollection(ql);
+            QueueViewModel vm = new QueueViewModel(mp, collection);
 
             vm.AddToQueueCommand.Execute(null);
             vm.ClearQueueCommand.Execute(null);
-            Assert.AreEqual(0, vm.CurrentQueue.Count);
+            Assert.AreEqual(0, vm.SongList.Count);
             Assert.AreEqual("", vm.QueueInfo);
         }
 
@@ -52,13 +54,14 @@ namespace MusicPlayer.Tests
 
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
-            QueueViewModel vm = new QueueViewModel(mp, ql);
+            SongCollection collection = new SongCollection(ql);
+            QueueViewModel vm = new QueueViewModel(mp, collection);
 
             vm.AddToQueueCommand.Execute(null);
 
             vm.SelectedIndex = 0;
-            vm.SelectedSong = vm.CurrentQueue[vm.SelectedIndex];
-            vm.PlayingSong = vm.CurrentQueue[1];
+            vm.SelectedSong = vm.SongList[vm.SelectedIndex];
+            vm.PlayingSong = vm.SongList[1];
             vm.PlaySong.Execute(null);
 
             // Assert playing song properties match selected song properties
@@ -76,13 +79,14 @@ namespace MusicPlayer.Tests
 
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
-            QueueViewModel vm = new QueueViewModel(mp, ql);
+            SongCollection col = new SongCollection(ql);
+            QueueViewModel vm = new QueueViewModel(mp, col);
 
             vm.AddToQueueCommand.Execute(null);
 
             vm.SelectedIndex = 0;
-            vm.SelectedSong = vm.CurrentQueue[vm.SelectedIndex];
-            vm.PlayingSong = vm.CurrentQueue[1];
+            vm.SelectedSong = vm.SongList[vm.SelectedIndex];
+            vm.PlayingSong = vm.SongList[1];
             vm.PlaySong.Execute(null);
 
             vm.PauseSong.Execute(null);
@@ -94,13 +98,14 @@ namespace MusicPlayer.Tests
 
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
-            QueueViewModel vm = new QueueViewModel(mp, ql);
+            SongCollection col = new SongCollection(ql);
+            QueueViewModel vm = new QueueViewModel(mp, col);
 
             vm.AddToQueueCommand.Execute(null);
 
             vm.SelectedIndex = 0;
-            vm.SelectedSong = vm.CurrentQueue[vm.SelectedIndex];
-            vm.PlayingSong = vm.CurrentQueue[1];
+            vm.SelectedSong = vm.SongList[vm.SelectedIndex];
+            vm.PlayingSong = vm.SongList[1];
             vm.PlaySong.Execute(null);
 
             vm.StopSong.Execute(null);
@@ -116,13 +121,14 @@ namespace MusicPlayer.Tests
 
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
-            QueueViewModel vm = new QueueViewModel(mp, ql);
+            SongCollection col = new SongCollection(ql);
+            QueueViewModel vm = new QueueViewModel(mp, col);
 
             vm.AddToQueueCommand.Execute(null);
 
             vm.SelectedIndex = 1;
-            vm.SelectedSong = vm.CurrentQueue[vm.SelectedIndex];
-            vm.PlayingSong = vm.CurrentQueue[0];
+            vm.SelectedSong = vm.SongList[vm.SelectedIndex];
+            vm.PlayingSong = vm.SongList[0];
             vm.PlaySong.Execute(null);
 
             vm.FastForwardCommand.Execute(null);
@@ -138,13 +144,14 @@ namespace MusicPlayer.Tests
 
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
-            QueueViewModel vm = new QueueViewModel(mp, ql);
+            SongCollection col = new SongCollection(ql);
+            QueueViewModel vm = new QueueViewModel(mp, col);
 
             vm.AddToQueueCommand.Execute(null);
 
             vm.SelectedIndex = 1;
-            vm.SelectedSong = vm.CurrentQueue[vm.SelectedIndex];
-            vm.PlayingSong = vm.CurrentQueue[0];
+            vm.SelectedSong = vm.SongList[vm.SelectedIndex];
+            vm.PlayingSong = vm.SongList[0];
             vm.PlaySong.Execute(null);
 
             //vm.StopSong.Execute(null);
