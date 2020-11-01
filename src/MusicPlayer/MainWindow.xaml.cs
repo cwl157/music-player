@@ -26,14 +26,14 @@ namespace MusicPlayer
     /// </summary>
     public partial class MainWindow : Window, IMusicPlayer
     {
-        private QueueViewModel _vm;
+        private MainWindowViewModel _vm;
         public MainWindow()
         {
             InitializeComponent();
             Player.LoadedBehavior = MediaState.Manual;
             IQueueLoader ql = new FileQueueLoader();
             SongCollection collection = new SongCollection(ql);
-            _vm = new QueueViewModel(this, collection);
+            _vm = new MainWindowViewModel(this, collection);
             DataContext = _vm;
         }
 

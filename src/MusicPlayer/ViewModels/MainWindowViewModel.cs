@@ -17,7 +17,7 @@ using MusicPlayer.Services;
 
 namespace MusicPlayer.ViewModels
 {
-    public class QueueViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
         private Timer _incrementPlayingProgress;
         private Timer _findSongEnd;
@@ -35,7 +35,7 @@ namespace MusicPlayer.ViewModels
         public ICommand FastForwardCommand { get; private set; }
         public ICommand RewindCommand { get; private set; }
 
-        public QueueViewModel(IMusicPlayer m, SongCollection collection)
+        public MainWindowViewModel(IMusicPlayer m, SongCollection collection)
         {
             if (DesignerProperties.GetIsInDesignMode(
                 new System.Windows.DependencyObject())) return;
