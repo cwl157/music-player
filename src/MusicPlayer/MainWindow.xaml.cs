@@ -24,61 +24,17 @@ namespace MusicPlayer
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IMusicPlayer
+    public partial class MainWindow : UserControl
     {
-        private MainWindowViewModel _vm;
+        //private MainWindowViewModel _vm;
         public MainWindow()
         {
             InitializeComponent();
-            Player.LoadedBehavior = MediaState.Manual;
-            IQueueLoader ql = new FileQueueLoader();
-            SongCollection collection = new SongCollection(ql);
-            _vm = new MainWindowViewModel(this, collection);
-            DataContext = _vm;
         }
 
         public void ListViewItem_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            _vm.PlaySong.Execute(null);
+        //    _vm.PlaySong.Execute(null);
         }
-
-        #region IMusicPlayer
-        public void Play(Uri filePath)
-        {
-            Player.Source = filePath;
-            Player.Play();
-        }
-
-        public void Play()
-        {
-            Player.Play();
-        }
-
-        public void Pause()
-        {
-            Player.Pause();
-        }
-
-        public void Stop()
-        {
-            Player.Stop();
-            
-        }
-
-        public void FastForward(double milliseconds)
-        {
-            Player.Position += TimeSpan.FromMilliseconds(milliseconds);
-        }
-       
-        public void Rewind(double milliseconds)
-        {
-            Player.Position -= TimeSpan.FromMilliseconds(milliseconds);
-        }
-
-        public bool IsDone()
-        {
-            return Player.Position >= Player.NaturalDuration;
-        }
-        #endregion
     }
 }

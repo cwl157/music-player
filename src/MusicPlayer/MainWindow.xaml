@@ -1,4 +1,4 @@
-﻿<Window x:Class="MusicPlayer.MainWindow"
+﻿<UserControl x:Class="MusicPlayer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,12 +6,12 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:MusicPlayer"
         mc:Ignorable="d"
-        Title="Music Player" Height="640" Width="800">
-    <Window.Resources>
+        d:DesignHeight="640" d:DesignWidth="800">
+    <UserControl.Resources>
         <Style TargetType="ListViewItem">
             <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
         </Style>
-    </Window.Resources>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="9*"/>
@@ -29,7 +29,6 @@
             </ListView.View>
         </ListView>
         <TextBox x:Name="QueuePath" Text="{Binding QueueFilePath}" HorizontalAlignment="Left" Margin="1,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="562" Grid.Column="1" Grid.ColumnSpan="2"/>
-        <MediaElement x:Name="Player" HorizontalAlignment="Left" Height="100" Margin="565,42,0,0" VerticalAlignment="Top" Width="100" Grid.Column="2"/>
         <Button x:Name="PlayButton" Content="Play" HorizontalAlignment="Left" Margin="419,552,0,0" VerticalAlignment="Top" Command="{Binding PlaySong}" Grid.Column="2" Width="60" FontSize="20" Height="32"/>
         <ProgressBar Value="{Binding PlayingProgress}" Minimum="0" Maximum="{Binding PlayingSong.Duration.TotalMilliseconds}" x:Name="PlayingProgress" HorizontalAlignment="Left" Height="21" Margin="2,558,0,0" VerticalAlignment="Top" Width="358" Grid.Column="1" Grid.ColumnSpan="2">
         </ProgressBar>
@@ -48,4 +47,4 @@
         <Button Content="&lt;&lt;" Command="{Binding RewindCommand}" Grid.Column="2" HorizontalAlignment="Left" Margin="630,552,0,0" VerticalAlignment="Top" Height="32" FontSize="14" Width="24"/>
         <Button Content="&gt;&gt;" Command="{Binding FastForwardCommand}" Grid.Column="2" HorizontalAlignment="Left" Margin="667,552,0,0" VerticalAlignment="Top" FontSize="14" Height="32"/>
     </Grid>
-</Window>
+</UserControl>

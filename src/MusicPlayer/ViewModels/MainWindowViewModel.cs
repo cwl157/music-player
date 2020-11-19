@@ -17,7 +17,7 @@ using MusicPlayer.Services;
 
 namespace MusicPlayer.ViewModels
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : BindableBase
     {
         private Timer _incrementPlayingProgress;
         private Timer _findSongEnd;
@@ -26,7 +26,6 @@ namespace MusicPlayer.ViewModels
         private SongCollection _currentQueue;
         private double _seconds;
 
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public ICommand AddToQueueCommand { get; private set; }
         public ICommand ClearQueueCommand { get; private set; }
         public ICommand PlaySong { get; private set; }
@@ -99,8 +98,7 @@ namespace MusicPlayer.ViewModels
             get { return _queueInfo; }
             set
             {
-                _queueInfo = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("QueueInfo"));
+                SetProperty(ref _queueInfo, value);
             }
         }
 
@@ -109,8 +107,7 @@ namespace MusicPlayer.ViewModels
             get { return _artistAlbumInfo; }
             set
             {
-                _artistAlbumInfo = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("ArtistAlbumInfo"));
+                SetProperty(ref _artistAlbumInfo, value);
             }
         }
 
@@ -120,8 +117,7 @@ namespace MusicPlayer.ViewModels
             get { return _trackTitleInfo; }
             set
             {
-                _trackTitleInfo = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("TrackTitleInfo"));
+                SetProperty(ref _trackTitleInfo, value);
             }
         }
 
@@ -131,8 +127,7 @@ namespace MusicPlayer.ViewModels
             get { return _selectedSong; }
             set
             {
-                _selectedSong = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("SelectedSong"));
+                SetProperty(ref _selectedSong, value);
             }
         }
 
@@ -142,8 +137,7 @@ namespace MusicPlayer.ViewModels
             get { return _playingSong; }
             set
             {
-                _playingSong = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("PlayingSong"));
+                SetProperty(ref _playingSong, value);
             }
         }
 
@@ -153,8 +147,7 @@ namespace MusicPlayer.ViewModels
             get { return _selectedIndex; }
             set
             {
-                _selectedIndex = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("SelectedIndex"));
+                SetProperty(ref _selectedIndex, value);
             }
         }
 
@@ -164,8 +157,7 @@ namespace MusicPlayer.ViewModels
             get { return _playingProgress; }
             set
             {
-                _playingProgress = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("PlayingProgress"));
+                SetProperty(ref _playingProgress, value);
             }
         }
 
@@ -175,8 +167,7 @@ namespace MusicPlayer.ViewModels
             get { return _elapsedTime; }
             set
             {
-                _elapsedTime = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("ElapsedTime"));
+                SetProperty(ref _elapsedTime, value);
             }
         }
 
