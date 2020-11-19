@@ -26,7 +26,7 @@ namespace MusicPlayer.Tests
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
             SongCollection collection = new SongCollection(ql);
-            MainWindowViewModel vm = new MainWindowViewModel(mp, collection);
+            PlayerViewModel vm = new PlayerViewModel(mp, collection);
 
             vm.AddToQueueCommand.Execute(null);
             Assert.AreEqual(2, vm.SongList.Count);
@@ -40,7 +40,7 @@ namespace MusicPlayer.Tests
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
             SongCollection collection = new SongCollection(ql);
-            MainWindowViewModel vm = new MainWindowViewModel(mp, collection);
+            PlayerViewModel vm = new PlayerViewModel(mp, collection);
 
             vm.AddToQueueCommand.Execute(null);
             vm.ClearQueueCommand.Execute(null);
@@ -55,7 +55,7 @@ namespace MusicPlayer.Tests
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
             SongCollection collection = new SongCollection(ql);
-            MainWindowViewModel vm = new MainWindowViewModel(mp, collection);
+            PlayerViewModel vm = new PlayerViewModel(mp, collection);
 
             vm.AddToQueueCommand.Execute(null);
 
@@ -80,7 +80,7 @@ namespace MusicPlayer.Tests
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
             SongCollection col = new SongCollection(ql);
-            MainWindowViewModel vm = new MainWindowViewModel(mp, col);
+            PlayerViewModel vm = new PlayerViewModel(mp, col);
 
             vm.AddToQueueCommand.Execute(null);
 
@@ -99,7 +99,7 @@ namespace MusicPlayer.Tests
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
             SongCollection col = new SongCollection(ql);
-            MainWindowViewModel vm = new MainWindowViewModel(mp, col);
+            PlayerViewModel vm = new PlayerViewModel(mp, col);
 
             vm.AddToQueueCommand.Execute(null);
 
@@ -122,7 +122,7 @@ namespace MusicPlayer.Tests
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
             SongCollection col = new SongCollection(ql);
-            MainWindowViewModel vm = new MainWindowViewModel(mp, col);
+            PlayerViewModel vm = new PlayerViewModel(mp, col);
 
             vm.AddToQueueCommand.Execute(null);
 
@@ -145,7 +145,7 @@ namespace MusicPlayer.Tests
             IMusicPlayer mp = new MusicPlayerStub();
             IQueueLoader ql = new QueueLoaderStub();
             SongCollection col = new SongCollection(ql);
-            MainWindowViewModel vm = new MainWindowViewModel(mp, col);
+            PlayerViewModel vm = new PlayerViewModel(mp, col);
 
             vm.AddToQueueCommand.Execute(null);
 

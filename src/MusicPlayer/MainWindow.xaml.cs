@@ -1,12 +1,8 @@
-﻿using MusicPlayer.Model;
+﻿using MusicPlayer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,27 +10,61 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MusicPlayer.ViewModels;
-using MusicPlayer.Services;
 
 namespace MusicPlayer
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class MainWindow : UserControl
+    public partial class MainWindow : Window, IMusicPlayer
     {
-        //private MainWindowViewModel _vm;
+       // protected MediaElement Player { get; set; }
         public MainWindow()
         {
             InitializeComponent();
+            SongPlayer.LoadedBehavior = MediaState.Manual;
+            DataContext = new MainWindowViewModel(this);
+            
         }
 
-        public void ListViewItem_MouseDoubleClick(object sender, MouseEventArgs e)
+        #region IMusicPlayer
+        public void Play(Uri filePath)
         {
-        //    _vm.PlaySong.Execute(null);
+            SongPlayer.Source = filePath;
+            SongPlayer.Play();
         }
+
+        public void Play()
+        {
+            SongPlayer.Play();
+        }
+
+        public void Pause()
+        {
+            SongPlayer.Pause();
+        }
+
+        public void Stop()
+        {
+            SongPlayer.Stop();
+
+        }
+
+        public void FastForward(double milliseconds)
+        {
+            SongPlayer.Position += TimeSpan.FromMilliseconds(milliseconds);
+        }
+
+        public void Rewind(double milliseconds)
+        {
+            SongPlayer.Position -= TimeSpan.FromMilliseconds(milliseconds);
+        }
+
+        public bool IsDone()
+        {
+            return SongPlayer.Position >= SongPlayer.NaturalDuration;
+        }
+        #endregion
     }
 }
