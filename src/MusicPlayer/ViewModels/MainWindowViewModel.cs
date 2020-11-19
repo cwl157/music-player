@@ -11,65 +11,30 @@ namespace MusicPlayer.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        private PlayerViewModel _playerVm;
-        private LibraryViewModel _libraryVm;
-        private BindableBase _CurrentViewModel;
-        //private CommandHandler NavCommand;
-        public ICommand NavigateToPlayer { get; private set; }
-        public ICommand NavigateToLibrary { get; private set; }
-
-        public BindableBase CurrentViewModel
-        {
-            get { return _CurrentViewModel; }
-            set { SetProperty(ref _CurrentViewModel, value); }
-        }
-
-        public BindableBase PlayerViewModel
-        {
-            get { return _playerVm; }
-        }
-
-        public BindableBase LibraryViewModel
-        {
-            get { return _libraryVm; }
-        }
+        public PlayerViewModel PlayerViewModel { get; private set; }
+        public LibraryViewModel LibraryViewModel { get; private set; }
 
         public MainWindowViewModel(IMusicPlayer player)
         {
             IQueueLoader ql = new FileQueueLoader();
             SongCollection collection = new SongCollection(ql);
 
-            _playerVm = new PlayerViewModel(player, collection);
-            _libraryVm = new LibraryViewModel();
-            NavigateToPlayer = new CommandHandler(() => NavToPlayer(), () => true);
-            NavigateToLibrary = new CommandHandler(() => NavToLibrary(), () => true);
-            _libraryVm.AddToQueueRequested += NavToPlayer;
-            _libraryVm.ClearQueueRequested += ClearQueue;
+            PlayerViewModel = new PlayerViewModel(player, collection);
 
-            //CurrentViewModel = _playerVm;
-            CurrentViewModel = _libraryVm;
+            LibraryViewModel = new LibraryViewModel();
+            LibraryViewModel.AddToQueueRequested += AddToPlayerQueue;
+            LibraryViewModel.ClearQueueRequested += ClearPlayerQueue;
         }
 
-        private void NavToPlayer()
+        private void AddToPlayerQueue(string queuePath)
         {
-            CurrentViewModel = _playerVm;
+            PlayerViewModel.QueueFilePath = queuePath;
+            PlayerViewModel.AddToQueueCommand.Execute(null);
         }
 
-        private void NavToPlayer(string queuePath)
+        private void ClearPlayerQueue()
         {
-            _playerVm.QueueFilePath = queuePath;
-            _playerVm.AddToQueueCommand.Execute(null);
-       //     CurrentViewModel = _playerVm;
-        }
-
-        private void ClearQueue()
-        {
-            _playerVm.ClearQueueCommand.Execute(null);
-        }
-
-        private void NavToLibrary()
-        {
-            CurrentViewModel = _libraryVm;
+            PlayerViewModel.ClearQueueCommand.Execute(null);
         }
     }
 }
