@@ -7,10 +7,42 @@
              mc:Ignorable="d" 
              d:DesignHeight="640" d:DesignWidth="800">
     <Grid>
-        <TextBox x:Name="QueuePath" Text="{Binding QueueFilePath}" HorizontalAlignment="Left" Margin="56,89,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="359"/>
-        <Button Content="Add To Queue" Command="{Binding AddToQueueClick}" HorizontalAlignment="Left" Margin="439,88,0,0" VerticalAlignment="Top"/>
-        <Button Content="Clear Queue" Command="{Binding ClearQueueClick}" HorizontalAlignment="Left" Margin="546,89,0,0" VerticalAlignment="Top"/>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*">
+                
+            </ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*">
+                
+            </RowDefinition>
+            <RowDefinition Height="1*">
+                
+            </RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBox Grid.Row="1" x:Name="QueuePath" Text="{Binding QueueFilePath}" HorizontalAlignment="Left" Margin="0,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="359"/>
+        <Button Grid.Row="1" Grid.Column="1" Content="Add To Queue" Command="{Binding AddToQueueClick}" HorizontalAlignment="Left" Margin="0,20,0,0" VerticalAlignment="Top"/>
+        <Button Grid.Row="1" Grid.Column="1" Content="Clear Queue" Command="{Binding ClearQueueClick}" HorizontalAlignment="Left" Margin="100,20,0,0" VerticalAlignment="Top"/>
+        <ListView ItemsSource="{Binding Artists}" Grid.Column="0" Grid.Row="0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Arist" Width="150"  DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Albums" Width="150" DisplayMemberBinding="{Binding AlbumCount}" />
+                    <GridViewColumn Header="Tracks" Width="50" DisplayMemberBinding="{Binding TrackCount}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ListView ItemsSource="{Binding Albums}" Grid.Column="1" Grid.Row="0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Album" Width="180"  DisplayMemberBinding="{Binding Title}" />
+                    <GridViewColumn Header="Year" Width="60" DisplayMemberBinding="{Binding Year}" />
+                    <GridViewColumn Header="Tracks" Width="40" DisplayMemberBinding="{Binding TotalTracks}" />
+                    <GridViewColumn Header="Duration" Width="70" DisplayMemberBinding="{Binding Duration}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
 
     </Grid>
 </UserControl>

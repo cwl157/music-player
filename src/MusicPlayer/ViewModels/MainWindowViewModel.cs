@@ -19,9 +19,30 @@ namespace MusicPlayer.ViewModels
             IQueueLoader ql = new FileQueueLoader();
             SongCollection collection = new SongCollection(ql);
 
+            var songs = ql.Load(@"D:\My Music\Full Albums\Abrasion\Demonstration");
+
+            foreach (Song s in songs)
+            {
+                collection.SongList.Add(s);
+            }
+
+            songs = ql.Load(@"D:\My Music\Full Albums\A Vulture Wake\Fall Prey");
+
+            foreach (Song s in songs)
+            {
+                collection.SongList.Add(s);
+            }
+
+            songs = ql.Load(@"D:\My Music\Full Albums\A Vulture Wake\The Appropriate Level of Outrage");
+
+            foreach (Song s in songs)
+            {
+                collection.SongList.Add(s);
+            }
+
             PlayerViewModel = new PlayerViewModel(player, collection);
 
-            LibraryViewModel = new LibraryViewModel();
+            LibraryViewModel = new LibraryViewModel(collection);
             LibraryViewModel.AddToQueueRequested += AddToPlayerQueue;
             LibraryViewModel.ClearQueueRequested += ClearPlayerQueue;
         }
