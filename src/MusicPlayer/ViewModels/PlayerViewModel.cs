@@ -152,6 +152,13 @@ namespace MusicPlayer.ViewModels
             }
         }
 
+        private BitmapImage _selectedAlbumArt;
+        public BitmapImage SelectedAlbumArt
+        {
+            get { return _selectedAlbumArt; }
+            set { SetProperty(ref _selectedAlbumArt, value); }
+        }
+
         private double _playingProgress;
         public double PlayingProgress
         {
@@ -224,6 +231,15 @@ namespace MusicPlayer.ViewModels
             {
                 StopSongAction();
                 PlayingSong = SelectedSong;
+                var tfile = TagLib.File.Create(PlayingSong.FilePath);
+                if (tfile.Tag.Pictures.Length > 0)
+                {
+                    SelectedAlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+                }
+                else
+                {
+                    SelectedAlbumArt = null;
+                }
                 _playingIndex = SelectedIndex;
                 ArtistAlbumInfo = PlayingSong.Artist + " - " + PlayingSong.Album + " [" + PlayingSong.Year + "]";
                 TrackTitleInfo = PlayingSong.TrackNumber + ". " + PlayingSong.Title;
@@ -234,6 +250,24 @@ namespace MusicPlayer.ViewModels
                 _player.Play();
             }
             StartTimers();
+        }
+
+        private static BitmapImage LoadImage(byte[] imageData)
+        {
+            if (imageData == null || imageData.Length == 0) return null;
+            var image = new BitmapImage();
+            using (var mem = new MemoryStream(imageData))
+            {
+                mem.Position = 0;
+                image.BeginInit();
+                image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.UriSource = null;
+                image.StreamSource = mem;
+                image.EndInit();
+            }
+            image.Freeze();
+            return image;
         }
 
         private void PauseSongAction()
