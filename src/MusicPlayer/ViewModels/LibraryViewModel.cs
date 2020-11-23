@@ -45,7 +45,7 @@ namespace MusicPlayer.ViewModels
         private Album _selectedAlbum;
         public Album SelectedAlbum { get { return _selectedAlbum; } set { SetProperty(ref _selectedAlbum, value); } }
 
-        public LibraryViewModel(SongCollection songs)
+        public LibraryViewModel(IEnumerable<Song> songs)
         {
             AddToQueueClick = new CommandHandler(() => AddToQueueAction(), () => true);
             ClearQueueClick = new CommandHandler(() => ClearQueueAction(), () => true);
@@ -55,15 +55,15 @@ namespace MusicPlayer.ViewModels
             _selectedArtist = new Artist();
             _selectedAlbum = new Album();
           
-            IEnumerable<string> aNames = songs.SongList.Select(s => s.Artist).Distinct();
+            IEnumerable<string> aNames = songs.Select(s => s.Artist).Distinct();
             foreach (string s in aNames)
             {
                 var newArtist = new Artist() { Name = s, Albums = new ObservableCollection<Album>() };
-                var tmp = songs.SongList.Where(a => a.Artist == s);
+                var tmp = songs.Where(a => a.Artist == s);
                 var al = tmp.Select(aa => aa.Album).Distinct();
                 foreach (string album in al)
                 {
-                    var ss = songs.SongList.Where(t => t.Artist == s && t.Album == album);
+                    var ss = songs.Where(t => t.Artist == s && t.Album == album);
                     
                     var newAlbum = new Album();
                     newAlbum.Songs = new ObservableCollection<Song>();

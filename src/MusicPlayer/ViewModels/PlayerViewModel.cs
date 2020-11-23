@@ -34,7 +34,7 @@ namespace MusicPlayer.ViewModels
         public ICommand FastForwardCommand { get; private set; }
         public ICommand RewindCommand { get; private set; }
 
-        public PlayerViewModel(IMusicPlayer m, SongCollection collection)
+        public PlayerViewModel(IMusicPlayer m)
         {
             if (DesignerProperties.GetIsInDesignMode(
                 new System.Windows.DependencyObject())) return;

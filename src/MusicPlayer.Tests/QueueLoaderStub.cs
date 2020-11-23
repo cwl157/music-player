@@ -3,6 +3,7 @@ using MusicPlayer.Services;
 using NUnit.Framework.Constraints;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace MusicPlayer.Tests
@@ -34,6 +35,11 @@ namespace MusicPlayer.Tests
             });
 
             return tmp;
+        }
+
+        public void WalkDirectoryTree(DirectoryInfo root, List<Song> result)
+        {
+            throw new NotImplementedException();
         }
     }
 }
