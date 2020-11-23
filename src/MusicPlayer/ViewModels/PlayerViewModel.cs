@@ -23,7 +23,7 @@ namespace MusicPlayer.ViewModels
         private Timer _findSongEnd;
         private int _playingIndex;
         private readonly IMusicPlayer _player;
-        private SongCollection _currentQueue;
+       // private SongCollection _currentQueue;
         private double _seconds;
 
         public ICommand AddToQueueCommand { get; private set; }
@@ -47,7 +47,8 @@ namespace MusicPlayer.ViewModels
             ElapsedTime = "00:00 / 00:00";
             _incrementPlayingProgress = new Timer();
             _incrementPlayingProgress.Interval = 1000;
-            _currentQueue = collection;
+            // _currentQueue = new SongCollection(null);
+            SongList = new ObservableCollection<Song>();
             _incrementPlayingProgress.Elapsed += (sender, e) =>
             {
                 _seconds += 1000;
@@ -65,10 +66,10 @@ namespace MusicPlayer.ViewModels
                     if (_player.IsDone())
                     {
                         Debug.WriteLine("Done");
-                        if (++_playingIndex < _currentQueue.SongList.Count)
+                        if (++_playingIndex < SongList.Count)
                         {
 
-                            SelectedSong = _currentQueue.SongList[_playingIndex];
+                            SelectedSong = SongList[_playingIndex];
                             PlaySongAction();
                         }
                         else
@@ -79,7 +80,7 @@ namespace MusicPlayer.ViewModels
                 });
             };
 
-            AddToQueueCommand = new CommandHandler(() => AddToQueueAction(), () => true);
+            //AddToQueueCommand = new CommandHandler(() => AddToQueueAction(), () => true);
             ClearQueueCommand = new CommandHandler(() => ClearQueueAction(), () => true);
             PlaySong = new CommandHandler(() => PlaySongAction(), () => true);
             PauseSong = new CommandHandler(() => PauseSongAction(), () => true);
@@ -90,7 +91,7 @@ namespace MusicPlayer.ViewModels
 
         #region ViewBindedProperties
         public string QueueFilePath { get; set; }
-        public ObservableCollection<Song> SongList { get { return _currentQueue.SongList; } }
+        public ObservableCollection<Song> SongList { get; private set; }
 
         private string _queueInfo;
         public string QueueInfo
@@ -173,27 +174,47 @@ namespace MusicPlayer.ViewModels
 
         #endregion
 
-        #region CommandActions
-        private void AddToQueueAction()
+        public void AddToQueue(IEnumerable<Song> songs)
         {
-            _currentQueue.Load(QueueFilePath);
-
-            if (_currentQueue.SongList.Count > 0)
+            foreach (Song s in songs)
             {
-                double queueDuration = _currentQueue.TotalSeconds();
+                SongList.Add(s);
+            }
+
+            if (SongList.Count > 0)
+            {
+                double queueDuration = SongList.Sum(s => s.Duration.TotalSeconds);
                 string format = "hh\\:mm\\:ss";
                 if (queueDuration < 3600)
                 {
                     format = "mm\\:ss";
                 }
                 TimeSpan totalDuration = TimeSpan.FromSeconds(queueDuration);
-                QueueInfo = _currentQueue.SongList.Count + " songs - " + totalDuration.ToString(format);
+                QueueInfo = SongList.Count + " songs - " + totalDuration.ToString(format);
             }
         }
 
+        #region CommandActions
+        //private void AddToQueueAction()
+        //{
+        //    _currentQueue.Load(QueueFilePath);
+
+        //    if (_currentQueue.SongList.Count > 0)
+        //    {
+        //        double queueDuration = _currentQueue.TotalSeconds();
+        //        string format = "hh\\:mm\\:ss";
+        //        if (queueDuration < 3600)
+        //        {
+        //            format = "mm\\:ss";
+        //        }
+        //        TimeSpan totalDuration = TimeSpan.FromSeconds(queueDuration);
+        //        QueueInfo = _currentQueue.SongList.Count + " songs - " + totalDuration.ToString(format);
+        //    }
+        //}
+
         private void ClearQueueAction()
         {
-            _currentQueue.SongList.Clear();
+            SongList.Clear();
             QueueInfo = "";
         }
 

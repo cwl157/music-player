@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 
 namespace MusicPlayer.ViewModels
@@ -15,49 +16,94 @@ namespace MusicPlayer.ViewModels
     {
         public ICommand AddToQueueClick { get; private set; }
         public ICommand ClearQueueClick { get; private set; }
-        public event Action<string> AddToQueueRequested = delegate { };
+        public event Action AddToQueueRequested = delegate { };
         public event Action ClearQueueRequested = delegate { };
-        //private ArtistCollection _artists;
-        //private AlbumCollection _albums;
 
-        //private ObservableCollection<Artist> _artists;
         public ObservableCollection<Artist> Artists { get; private set; }
-        public ObservableCollection<Album> Albums { get; private set; }
+
+        private ObservableCollection<Album> _albums;
+        public ObservableCollection<Album> Albums
+        {
+            get { return _albums; }
+            set { SetProperty(ref _albums, value); }
+        }
+
+        private Artist _selectedArtist;
+        public Artist SelectedArtist
+        {
+            get
+            {
+                return _selectedArtist;
+            }
+            set
+            {
+                SetProperty(ref _selectedArtist, value);
+                Albums = Artists.FirstOrDefault(a => a.Name == SelectedArtist.Name).Albums;
+            }
+        }
+
+        private Album _selectedAlbum;
+        public Album SelectedAlbum { get { return _selectedAlbum; } set { SetProperty(ref _selectedAlbum, value); } }
 
         public LibraryViewModel(SongCollection songs)
         {
             AddToQueueClick = new CommandHandler(() => AddToQueueAction(), () => true);
             ClearQueueClick = new CommandHandler(() => ClearQueueAction(), () => true);
             Artists = new ObservableCollection<Artist>();
-           // Dictionary<string, List<Album>> artists = new Dictionary<string, List<Albums>>();
-            foreach (Song s in songs.SongList)
+            Albums = new ObservableCollection<Album>();
+
+            _selectedArtist = new Artist();
+            _selectedAlbum = new Album();
+          
+            IEnumerable<string> aNames = songs.SongList.Select(s => s.Artist).Distinct();
+            foreach (string s in aNames)
             {
-                //if (artists.ContainsKey(s.Artist))
-                //{
-                //    artists[s.Artist].Add(new Album() { Title })
-                //}
-                Artists.Add(new Artist() { Name = s.Artist, AlbumCount = 1, TrackCount = 3 });
-                
+                var newArtist = new Artist() { Name = s, Albums = new ObservableCollection<Album>() };
+                var tmp = songs.SongList.Where(a => a.Artist == s);
+                var al = tmp.Select(aa => aa.Album).Distinct();
+                foreach (string album in al)
+                {
+                    var ss = songs.SongList.Where(t => t.Artist == s && t.Album == album);
+                    
+                    var newAlbum = new Album();
+                    newAlbum.Songs = new ObservableCollection<Song>();
+                    newAlbum.Title = album;
+                    foreach (Song ts in ss)
+                    {
+                        newAlbum.Songs.Add(ts);
+                    }
+                    
+                    int outYear = 0;
+                    int.TryParse(ss.First().Year, out outYear);
+                    newAlbum.Year = outYear;
+                    newAlbum.Duration = "00:00";
+                    if (newAlbum.Songs.Count > 0)
+                    {
+                        double totalSeconds = newAlbum.Songs.Sum(s => s.Duration.TotalSeconds);
+                        string format = "hh\\:mm\\:ss";
+                        if (totalSeconds < 3600)
+                        {
+                            format = "mm\\:ss";
+                        }
+                        TimeSpan totalDuration = TimeSpan.FromSeconds(totalSeconds);
+                        newAlbum.Duration = totalDuration.ToString(format);
+                    }
+                    newArtist.Albums.Add(newAlbum);
+                }
+                Artists.Add(newArtist);
             }
-
-            // _artists = new ObservableCollection<Artist>() { new Artist() { Name = "Abrasion", AlbumCount= 1, TrackCount= 3 } };
-            //_artists = a;
-            //_artists.Load("");
-            //_albums = aa;
-            //_albums.Load("");
         }
 
-        private string _queueFilePath;
-        public string QueueFilePath
-        {
-            get { return _queueFilePath; }
-            set { SetProperty(ref _queueFilePath, value); }
-        }
+        //private string _queueFilePath;
+        //public string QueueFilePath
+        //{
+        //    get { return _queueFilePath; }
+        //    set { SetProperty(ref _queueFilePath, value); }
+        //}
 
         private void AddToQueueAction()
         {
-            Debug.WriteLine(_queueFilePath);
-            AddToQueueRequested(_queueFilePath);
+            AddToQueueRequested();
         }
 
         private void ClearQueueAction()

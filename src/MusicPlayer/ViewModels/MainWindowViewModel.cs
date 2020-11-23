@@ -3,7 +3,9 @@ using MusicPlayer.Model;
 using MusicPlayer.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
+using System.Linq;
 using System.Text;
 using System.Windows.Input;
 
@@ -47,10 +49,21 @@ namespace MusicPlayer.ViewModels
             LibraryViewModel.ClearQueueRequested += ClearPlayerQueue;
         }
 
-        private void AddToPlayerQueue(string queuePath)
+        private void AddToPlayerQueue()
         {
-            PlayerViewModel.QueueFilePath = queuePath;
-            PlayerViewModel.AddToQueueCommand.Execute(null);
+            List<Song> songsToQueue = new List<Song>();
+            if (LibraryViewModel.SelectedAlbum == null)
+            {
+                foreach (Album a in LibraryViewModel.SelectedArtist.Albums)
+                {
+                    songsToQueue = songsToQueue.Concat(a.Songs).ToList();
+                }
+            }
+            else
+            {
+                songsToQueue = LibraryViewModel.SelectedAlbum.Songs.ToList();
+            }
+            PlayerViewModel.AddToQueue(songsToQueue);
         }
 
         private void ClearPlayerQueue()
