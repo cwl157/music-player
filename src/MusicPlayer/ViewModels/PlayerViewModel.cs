@@ -26,7 +26,7 @@ namespace MusicPlayer.ViewModels
        // private SongCollection _currentQueue;
         private double _seconds;
 
-        public ICommand AddToQueueCommand { get; private set; }
+       // public ICommand AddToQueueCommand { get; private set; }
         public ICommand ClearQueueCommand { get; private set; }
         public ICommand PlaySong { get; private set; }
         public ICommand PauseSong { get; private set; }
@@ -90,7 +90,7 @@ namespace MusicPlayer.ViewModels
         }
 
         #region ViewBindedProperties
-        public string QueueFilePath { get; set; }
+     //   public string QueueFilePath { get; set; }
         public ObservableCollection<Song> SongList { get; private set; }
 
         private string _queueInfo;
