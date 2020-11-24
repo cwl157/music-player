@@ -23,7 +23,7 @@
         </Grid.RowDefinitions>
         <Button Grid.Column="1" Content="Add To Queue" Command="{Binding AddToQueueClick}" HorizontalAlignment="Left" Margin="215,0,0,0" VerticalAlignment="Center"/>
         <Button Grid.Row="0" Grid.Column="1" Content="Clear Queue" Command="{Binding ClearQueueClick}" HorizontalAlignment="Left" Margin="300,18,0,0" VerticalAlignment="Top" Width="75"/>
-        <ListView ItemsSource="{Binding Artists}" SelectedItem="{Binding SelectedArtist}" Grid.Column="0" Grid.Row="1">
+        <ListView ItemsSource="{Binding Artists}" SelectedItem="{Binding SelectedArtist}" Grid.Column="0" Grid.Row="1" SelectionMode="Single">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Arist" Width="150"  DisplayMemberBinding="{Binding Name}" />
@@ -32,7 +32,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <ListView ItemsSource="{Binding Albums}"  SelectedItem="{Binding SelectedAlbum}" Grid.Column="1" Grid.Row="1">
+        <ListView ItemsSource="{Binding Albums}"  SelectedItem="{Binding SelectedAlbum}" Grid.Column="1" Grid.Row="1" SelectionMode="Single">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Album" Width="180"  DisplayMemberBinding="{Binding Title}" />
