@@ -14,6 +14,9 @@
         <DataTemplate DataType="{x:Type player:LibraryViewModel}">
             <local:Library />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type player:SettingsViewModel}">
+            <local:Settings />
+        </DataTemplate>
     </Window.Resources>
     <!--<Window.DataContext>
         <local:Window1ViewModel />
@@ -30,7 +33,7 @@
                 <ContentControl Content="{Binding PlayerViewModel}" />
             </TabItem>
             <TabItem Header="Settings">
-                <ContentControl Content="{Binding PlayerViewModel}" />
+                <ContentControl Content="{Binding SettingsViewModel}" />
             </TabItem>
         </TabControl>
         <MediaElement x:Name="SongPlayer" Height="100" Width="100"/>
