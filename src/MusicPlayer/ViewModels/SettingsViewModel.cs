@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace MusicPlayer.ViewModels
@@ -15,10 +16,18 @@ namespace MusicPlayer.ViewModels
     {
         public string LibraryFolderPath { get; set; }
 
+        private string _refreshStatus;
+        public string RefreshStatus
+        {
+            get { return _refreshStatus; }
+            set { SetProperty(ref _refreshStatus, value); }
+        }
+
         public ICommand RefreshLibrary { get; private set; }
 
         public SettingsViewModel()
         {
+            RefreshStatus = "Not Started";
             RefreshLibrary = new CommandHandler(() => RefreshLibraryAction(), () => true);
         }
 
@@ -26,14 +35,18 @@ namespace MusicPlayer.ViewModels
         {
             IQueueLoader ql = new FileQueueLoader();
 
-            List<Song> songs = new List<Song>();
-            ql.WalkDirectoryTree(new DirectoryInfo(LibraryFolderPath), songs);
+            RefreshStatus = "Refreshing...";
+            Task.Run(() =>
+            {
+                List<Song> songs = new List<Song>();
+                ql.WalkDirectoryTree(new DirectoryInfo(LibraryFolderPath), songs);
 
-            var options = new JsonSerializerOptions { Converters = { new TimeSpanConverter() } };
-         //  JsonSerializer.Serialize(myObj, options);
-            string result  = JsonSerializer.Serialize(songs, options);
-            File.WriteAllText(@".\library.json", result);
-
+                var options = new JsonSerializerOptions { Converters = { new TimeSpanConverter() } };
+                //  JsonSerializer.Serialize(myObj, options);
+                string result = JsonSerializer.Serialize(songs, options);
+                File.WriteAllText(@".\library.json", result);
+                RefreshStatus = "Refresh Complete";
+            });            
         }
     }
 }
