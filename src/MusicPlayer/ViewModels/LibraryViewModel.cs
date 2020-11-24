@@ -77,18 +77,20 @@ namespace MusicPlayer.ViewModels
             _selectedAlbum = new Album();
           
             IEnumerable<string> aNames = songs.Select(s => s.Artist).Distinct();
+            aNames = aNames.OrderBy(s => s);
             foreach (string s in aNames)
             {
                 var newArtist = new Artist() { Name = s, Albums = new ObservableCollection<Album>() };
                 var tmp = songs.Where(a => a.Artist == s);
-                var al = tmp.Select(aa => aa.Album).Distinct();
-                foreach (string album in al)
+                var al = tmp.Select(aa => new { title = aa.Album, year = aa.Year }).Distinct();
+                al = al.OrderByDescending(a => a.year);
+                foreach (dynamic album in al)
                 {
-                    var ss = songs.Where(t => t.Artist == s && t.Album == album);
+                    var ss = songs.Where(t => t.Artist == s && t.Album == album.title);
                     
                     var newAlbum = new Album();
                     newAlbum.Songs = new ObservableCollection<Song>();
-                    newAlbum.Title = album;
+                    newAlbum.Title = album.title;
                     foreach (Song ts in ss)
                     {
                         newAlbum.Songs.Add(ts);
@@ -113,6 +115,7 @@ namespace MusicPlayer.ViewModels
                 }
                 Artists.Add(newArtist);
             }
+            //Artists = Artists.OrderBy(a => a.Name);
             ArtistHeader = "Artists (" + Artists.Count + ")";
             AlbumHeader = "Albums (" + Artists.Sum(a => a.AlbumCount) + ")";
             TrackHeader = "Tracks (" + Artists.Sum(a => a.TrackCount) + ")";
