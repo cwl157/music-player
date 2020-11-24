@@ -45,6 +45,27 @@ namespace MusicPlayer.ViewModels
         private Album _selectedAlbum;
         public Album SelectedAlbum { get { return _selectedAlbum; } set { SetProperty(ref _selectedAlbum, value); } }
 
+        private string _artistHeader;
+        public string ArtistHeader
+        {
+            get { return _artistHeader; }
+            set { SetProperty(ref _artistHeader, value); }
+        }
+
+        private string _albumHeader;
+        public string AlbumHeader
+        {
+            get { return _albumHeader; }
+            set { SetProperty(ref _albumHeader, value); }
+        }
+
+        private string _trackHeader;
+        public string TrackHeader
+        {
+            get { return _trackHeader; }
+            set { SetProperty(ref _trackHeader, value); }
+        }
+
         public LibraryViewModel(IEnumerable<Song> songs)
         {
             AddToQueueClick = new CommandHandler(() => AddToQueueAction(), () => true);
@@ -92,6 +113,9 @@ namespace MusicPlayer.ViewModels
                 }
                 Artists.Add(newArtist);
             }
+            ArtistHeader = "Artists (" + Artists.Count + ")";
+            AlbumHeader = "Albums (" + Artists.Sum(a => a.AlbumCount) + ")";
+            TrackHeader = "Tracks (" + Artists.Sum(a => a.TrackCount) + ")";
         }
 
         //private string _queueFilePath;

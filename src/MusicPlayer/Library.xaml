@@ -26,9 +26,9 @@
         <ListView ItemsSource="{Binding Artists}" SelectedItem="{Binding SelectedArtist}" Grid.Column="0" Grid.Row="1" SelectionMode="Single">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Arist" Width="150"  DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Albums" Width="150" DisplayMemberBinding="{Binding AlbumCount}" />
-                    <GridViewColumn Header="Tracks" Width="50" DisplayMemberBinding="{Binding TrackCount}" />
+                    <GridViewColumn Header="{Binding ArtistHeader}" Width="150"  DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="{Binding AlbumHeader}" Width="125" DisplayMemberBinding="{Binding AlbumCount}" />
+                    <GridViewColumn Header="{Binding TrackHeader}" Width="75" DisplayMemberBinding="{Binding TrackCount}" />
                 </GridView>
             </ListView.View>
         </ListView>
@@ -42,6 +42,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
+        
 
     </Grid>
 </UserControl>
