@@ -22,23 +22,23 @@ namespace MusicPlayer.ViewModels
 
         public MainWindowViewModel(IMusicPlayer player)
         {
-            //IQueueLoader ql = new FileQueueLoader();
-
-            //List<Song> songs = new List<Song>();
-            //ql.WalkDirectoryTree(new DirectoryInfo(@"D:\My Music\test"), songs);
-
             List<Song> songs = new List<Song>();
-            if (System.IO.File.Exists(@".\library.json"))
+            try
             {
-                string songText = System.IO.File.ReadAllText(@".\library.json");
-                //JsonSerializerOptions o = new JsonSerializerOptions();
-                //o.
-                var options = new JsonSerializerOptions { Converters = { new MusicPlayer.Infrastructure.TimeSpanConverter() } };
-                songs = JsonSerializer.Deserialize<List<Song>>(songText, options);
+                if (System.IO.File.Exists(@".\library.json"))
+                {
+                    string songText = System.IO.File.ReadAllText(@".\library.json");
+                    var options = new JsonSerializerOptions { Converters = { new MusicPlayer.Infrastructure.TimeSpanConverter() } };
+                    songs = JsonSerializer.Deserialize<List<Song>>(songText, options);
+                }
+                else
+                {
+                    songs.Add(new Song { Artist = "No library found. Please go to settings tab to configure your library" });
+                }  
             }
-            else
+            catch (Exception e)
             {
-                songs.Add(new Song { Artist = "No library found. Please go to settings tab to configure your library" });
+                songs.Add(new Song { Artist = "Error loading library. Please go to settings tab and try refreshing the library", Album = e.Message });
             }
 
             PlayerViewModel = new PlayerViewModel(player);
