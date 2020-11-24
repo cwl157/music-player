@@ -183,6 +183,7 @@ namespace MusicPlayer.ViewModels
 
         public void AddToQueue(IEnumerable<Song> songs)
         {
+            songs = songs.OrderBy(s => s.TrackNumber);
             foreach (Song s in songs)
             {
                 SongList.Add(s);
