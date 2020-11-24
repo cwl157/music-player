@@ -29,7 +29,9 @@ namespace MusicPlayer.ViewModels
             List<Song> songs = new List<Song>();
             ql.WalkDirectoryTree(new DirectoryInfo(LibraryFolderPath), songs);
 
-            string result  = JsonSerializer.Serialize(songs);
+            var options = new JsonSerializerOptions { Converters = { new TimeSpanConverter() } };
+         //  JsonSerializer.Serialize(myObj, options);
+            string result  = JsonSerializer.Serialize(songs, options);
             File.WriteAllText(@".\library.json", result);
 
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using System.Windows.Media.Imaging;
 
 namespace MusicPlayer.Model
@@ -10,6 +11,7 @@ namespace MusicPlayer.Model
         public string Title { get; set; }
         public string FilePath { get; set; }
         public int TrackNumber { get; set; }
+       // [JsonConverter(typeof(JsonTimeSpanConverter))]
         public TimeSpan Duration { get; set; }
         public string DisplayDuration
         { get

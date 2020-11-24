@@ -33,7 +33,8 @@ namespace MusicPlayer.ViewModels
                 string songText = System.IO.File.ReadAllText(@".\library.json");
                 //JsonSerializerOptions o = new JsonSerializerOptions();
                 //o.
-                songs = JsonSerializer.Deserialize<List<Song>>(songText);
+                var options = new JsonSerializerOptions { Converters = { new MusicPlayer.Infrastructure.TimeSpanConverter() } };
+                songs = JsonSerializer.Deserialize<List<Song>>(songText, options);
             }
             else
             {
