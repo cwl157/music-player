@@ -19,30 +19,31 @@ namespace MusicPlayer.ViewModels
         public PlayerViewModel PlayerViewModel { get; private set; }
         public LibraryViewModel LibraryViewModel { get; private set; }
         public SettingsViewModel SettingsViewModel { get; private set; }
+        private List<Song> _songs;
 
         public MainWindowViewModel(IMusicPlayer player)
         {
-            List<Song> songs = new List<Song>();
+            _songs = new List<Song>();
             try
             {
                 if (System.IO.File.Exists(@".\library.json"))
                 {
                     string songText = System.IO.File.ReadAllText(@".\library.json");
                     var options = new JsonSerializerOptions { Converters = { new MusicPlayer.Infrastructure.TimeSpanConverter() } };
-                    songs = JsonSerializer.Deserialize<List<Song>>(songText, options);
+                    _songs = JsonSerializer.Deserialize<List<Song>>(songText, options);
                 }
                 else
                 {
-                    songs.Add(new Song { Artist = "No library found. Please go to settings tab to configure your library" });
+                    _songs.Add(new Song { Artist = "No library found. Please go to settings tab to configure your library" });
                 }  
             }
             catch (Exception e)
             {
-                songs.Add(new Song { Artist = "Error loading library. Please go to settings tab and try refreshing the library", Album = e.Message });
+                _songs.Add(new Song { Artist = "Error loading library. Please go to settings tab and try refreshing the library", Album = e.Message });
             }
 
             PlayerViewModel = new PlayerViewModel(player);
-            LibraryViewModel = new LibraryViewModel(songs);
+            LibraryViewModel = new LibraryViewModel(_songs);
             SettingsViewModel = new SettingsViewModel();
             LibraryViewModel.AddToQueueRequested += AddToPlayerQueue;
             LibraryViewModel.ClearQueueRequested += ClearPlayerQueue;
@@ -50,18 +51,19 @@ namespace MusicPlayer.ViewModels
 
         private void AddToPlayerQueue()
         {
-            List<Song> songsToQueue = new List<Song>();
-            if (LibraryViewModel.SelectedAlbum == null)
-            {
-                foreach (Album a in LibraryViewModel.SelectedArtist.Albums)
-                {
-                    songsToQueue = songsToQueue.Concat(a.Songs).ToList();
-                }
-            }
-            else
-            {
-                songsToQueue = LibraryViewModel.SelectedAlbum.Songs.ToList();
-            }
+            //List<Song> songsToQueue = new List<Song>();
+            IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title);
+            //if (LibraryViewModel.SelectedAlbum == null)
+            //{
+            //    foreach (Album a in LibraryViewModel.SelectedArtist.Albums)
+            //    {
+            //        songsToQueue = songsToQueue.Concat(a.Songs).ToList();
+            //    }
+            //}
+            //else
+            //{
+            //    songsToQueue = LibraryViewModel.SelectedAlbum.Songs.ToList();
+            //}
             PlayerViewModel.AddToQueue(songsToQueue);
         }
 

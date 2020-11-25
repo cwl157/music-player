@@ -9,10 +9,11 @@ namespace MusicPlayer.Model
     {
         public string Title { get; set; }
         public int Year { get; set; }
-        public int TotalTracks { get { return Songs.Count; } }
+        public int TotalTracks { get; set; }
 
         public string Duration { get; set; }
 
-        public ObservableCollection<Song> Songs { get; set; }
+      //  public ObservableCollection<Song> Songs { get; set; }
+        public List<string> ArtistNames { get; set; }
     }
 }
