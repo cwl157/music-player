@@ -39,13 +39,20 @@ namespace MusicPlayer.ViewModels
             Task.Run(() =>
             {
                 List<Song> songs = new List<Song>();
-                ql.WalkDirectoryTree(new DirectoryInfo(LibraryFolderPath), songs);
+                if (string.IsNullOrEmpty(LibraryFolderPath) || !Directory.Exists(LibraryFolderPath))
+                {
+                    RefreshStatus = "Invalid directory";
+                }
+                else
+                {
+                    ql.WalkDirectoryTree(new DirectoryInfo(LibraryFolderPath), songs);
 
-                var options = new JsonSerializerOptions { Converters = { new TimeSpanConverter() } };
-                //  JsonSerializer.Serialize(myObj, options);
-                string result = JsonSerializer.Serialize(songs, options);
-                File.WriteAllText(@".\library.json", result);
-                RefreshStatus = "Refresh Complete";
+                    var options = new JsonSerializerOptions { Converters = { new TimeSpanConverter() } };
+                    //  JsonSerializer.Serialize(myObj, options);
+                    string result = JsonSerializer.Serialize(songs, options);
+                    File.WriteAllText(@".\library.json", result);
+                    RefreshStatus = "Refresh Complete";
+                }
             });            
         }
     }
