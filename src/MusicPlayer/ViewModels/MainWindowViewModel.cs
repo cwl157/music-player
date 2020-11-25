@@ -52,7 +52,17 @@ namespace MusicPlayer.ViewModels
         private void AddToPlayerQueue()
         {
             //List<Song> songsToQueue = new List<Song>();
-            IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString());
+            if (LibraryViewModel.SelectedAlbum == null || string.IsNullOrEmpty(LibraryViewModel.SelectedAlbum.Title))
+            {
+                IEnumerable<Song> songsToQueue = _songs.Where(s => s.Artist == LibraryViewModel.SelectedArtist.Name);
+                PlayerViewModel.AddToQueue(songsToQueue);
+            }
+            else
+            {
+                IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString());
+                PlayerViewModel.AddToQueue(songsToQueue);
+            }
+           // IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString());
             //if (LibraryViewModel.SelectedAlbum == null)
             //{
             //    foreach (Album a in LibraryViewModel.SelectedArtist.Albums)
@@ -64,7 +74,7 @@ namespace MusicPlayer.ViewModels
             //{
             //    songsToQueue = LibraryViewModel.SelectedAlbum.Songs.ToList();
             //}
-            PlayerViewModel.AddToQueue(songsToQueue);
+            
         }
 
         private void ClearPlayerQueue()

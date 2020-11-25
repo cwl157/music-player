@@ -149,8 +149,7 @@ namespace MusicPlayer.ViewModels
                 _allArtists.Add(newArtist);
             }
 
-            _allArtists.Insert(0, new Artist { Name = "Show All (" + _allArtists.Count + ")", AlbumCount = _allArtists.Sum(a => a.AlbumCount), TrackCount = _allArtists.Sum(a => a.TrackCount)  });
-            Artists = new ObservableCollection<Artist>(_allArtists);
+           
 
             var albumNames = songs.Select(s => new { Title = s.Album, Year = s.Year }).Distinct();
             albumNames = albumNames.OrderByDescending(a => a.Year);
@@ -196,8 +195,9 @@ namespace MusicPlayer.ViewModels
                 _allAlbums.Add(newAlbum);
             }
             Albums = new ObservableCollection<Album>(_allAlbums);
+            _allArtists.Insert(0, new Artist { Name = "Show All (" + _allArtists.Count + ")", AlbumCount = Albums.Count, TrackCount = Albums.Sum(a => a.TotalTracks) });
+            Artists = new ObservableCollection<Artist>(_allArtists);
 
-            
             //Albums.Insert(0, "Show All");
 
             //var allAlbums = songs.Select(aa => new { title = aa.Album, year = aa.Year }).Distinct();
