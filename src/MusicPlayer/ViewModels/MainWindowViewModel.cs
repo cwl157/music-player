@@ -52,7 +52,7 @@ namespace MusicPlayer.ViewModels
         private void AddToPlayerQueue()
         {
             //List<Song> songsToQueue = new List<Song>();
-            IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title);
+            IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString());
             //if (LibraryViewModel.SelectedAlbum == null)
             //{
             //    foreach (Album a in LibraryViewModel.SelectedArtist.Albums)

@@ -156,7 +156,7 @@ namespace MusicPlayer.ViewModels
             albumNames = albumNames.OrderByDescending(a => a.Year);
             foreach (var name in albumNames)
             {
-                var ss = songs.Where(t => t.Album == name.Title);
+                var ss = songs.Where(t => t.Album == name.Title && t.Year == name.Year);
                 var newAlbum = new Album();
                // newAlbum.Songs = new ObservableCollection<Song>();
                 newAlbum.Title = name.Title;
