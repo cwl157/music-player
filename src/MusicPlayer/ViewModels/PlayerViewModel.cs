@@ -14,6 +14,7 @@ using System.Timers;
 using MusicPlayer.Infrastructure;
 using System.Dynamic;
 using MusicPlayer.Services;
+using System.Threading.Tasks;
 
 namespace MusicPlayer.ViewModels
 {
@@ -233,15 +234,19 @@ namespace MusicPlayer.ViewModels
             {
                 StopSongAction();
                 PlayingSong = SelectedSong;
-                var tfile = TagLib.File.Create(PlayingSong.FilePath);
-                if (tfile.Tag.Pictures.Length > 0)
+                Task.Run(() =>
                 {
-                    SelectedAlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
-                }
-                else
-                {
-                    SelectedAlbumArt = null;
-                }
+                    var tfile = TagLib.File.Create(PlayingSong.FilePath);
+                    if (tfile.Tag.Pictures.Length > 0)
+                    {
+                        SelectedAlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+                    }
+                    else
+                    {
+                        SelectedAlbumArt = null;
+                    }
+                });
+
                 _playingIndex = SelectedIndex;
                 ArtistAlbumInfo = PlayingSong.Artist + " - " + PlayingSong.Album + " [" + PlayingSong.Year + "]";
                 TrackTitleInfo = PlayingSong.TrackNumber + ". " + PlayingSong.Title;
