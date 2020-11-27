@@ -200,6 +200,7 @@ namespace MusicPlayer.ViewModels
                 TimeSpan totalDuration = TimeSpan.FromSeconds(queueDuration);
                 QueueInfo = SongList.Count + " songs - " + totalDuration.ToString(format);
             }
+            SelectedIndex = 0;
         }
 
         #region CommandActions
@@ -263,6 +264,8 @@ namespace MusicPlayer.ViewModels
                 image.BeginInit();
                 image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
                 image.CacheOption = BitmapCacheOption.OnLoad;
+                image.DecodePixelHeight = 256;
+                image.DecodePixelWidth = 256;
                 image.UriSource = null;
                 image.StreamSource = mem;
                 image.EndInit();

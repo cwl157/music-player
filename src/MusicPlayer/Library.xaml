@@ -32,7 +32,25 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <ListView ItemsSource="{Binding Albums}"  SelectedItem="{Binding SelectedAlbum}" Grid.Column="1" Grid.Row="1" SelectionMode="Single">
+
+        <ListView Visibility="Visible" x:Name="TvBox"  ItemsSource="{Binding Albums}"  SelectedItem="{Binding SelectedAlbum}" Grid.Column="1" Grid.Row="1"  VerticalAlignment="Top">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="2" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" >
+                        <Image Source="{Binding AlbumArt}" VerticalAlignment="Top" Width="160" Height="160" />
+                        <TextBlock Text="{Binding DisplayTitle}" Width="160" TextWrapping="Wrap"  VerticalAlignment="Bottom" />
+                        <TextBlock Text="{Binding DisplayInfo}" Width="160" TextWrapping="Wrap"  VerticalAlignment="Bottom" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <ListView Visibility="Hidden" ItemsSource="{Binding Albums}"  SelectedItem="{Binding SelectedAlbum}" Grid.Column="1" Grid.Row="1" SelectionMode="Single">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Album" Width="180"  DisplayMemberBinding="{Binding Title}" />

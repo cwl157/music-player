@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Windows.Media.Imaging;
 
 namespace MusicPlayer.Model
 {
@@ -12,6 +13,9 @@ namespace MusicPlayer.Model
         public int TotalTracks { get; set; }
 
         public string Duration { get; set; }
+        public string DisplayTitle { get { return Title + " - " + Year; } }
+        public string DisplayInfo { get { return "Tracks: " + TotalTracks + " Duration: " + Duration; } }
+        public BitmapImage AlbumArt { get; set; }
 
       //  public ObservableCollection<Song> Songs { get; set; }
         public List<string> ArtistNames { get; set; }

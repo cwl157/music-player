@@ -4,11 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace MusicPlayer.ViewModels
 {
@@ -71,6 +74,13 @@ namespace MusicPlayer.ViewModels
         private Album _selectedAlbum;
         public Album SelectedAlbum { get { return _selectedAlbum; } set { SetProperty(ref _selectedAlbum, value); } }
 
+        private BitmapImage _ImageData;
+        public BitmapImage ImageData
+        {
+            get { return this._ImageData; }
+            set { SetProperty(ref _ImageData, value); }
+        }
+
         //private string _artistHeader;
         //public string ArtistHeader
         //{
@@ -91,9 +101,14 @@ namespace MusicPlayer.ViewModels
         //    get { return _trackHeader; }
         //    set { SetProperty(ref _trackHeader, value); }
         //}
-
+        // for this code image needs to be a project resource
+        //private BitmapImage LoadImage(string filename)
+        //{
+        //    return new BitmapImage(new Uri("pack://application:,,,/" + filename));
+        //}
         public LibraryViewModel(IEnumerable<Song> songs)
         {
+            //ImageData = LoadImage(@"D:\My Music\Full Albums\ANCST\Summits of Despondency\cover.jpg");
             AddToQueueClick = new CommandHandler(() => AddToQueueAction(), () => true);
             ClearQueueClick = new CommandHandler(() => ClearQueueAction(), () => true);
 
@@ -160,6 +175,11 @@ namespace MusicPlayer.ViewModels
                // newAlbum.Songs = new ObservableCollection<Song>();
                 newAlbum.Title = name.Title;
                 newAlbum.TotalTracks = ss.Count();
+                var tfile = TagLib.File.Create(ss.First().FilePath);
+                if (tfile.Tag.Pictures.Length > 0)
+                {
+                    newAlbum.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+                }
                 int outYear = 0;
                 int.TryParse(ss.First().Year, out outYear);
                 newAlbum.Year = outYear;
@@ -207,6 +227,27 @@ namespace MusicPlayer.ViewModels
             //ArtistHeader = "Artists (" + Artists.Count + ")";
             //AlbumHeader = "Albums (" + Artists.Sum(a => a.AlbumCount) + ")";
             //TrackHeader = "Tracks (" + Artists.Sum(a => a.TrackCount) + ")";
+        }
+
+        private static BitmapImage LoadImage(byte[] imageData)
+        {
+            if (imageData == null || imageData.Length == 0) return null;
+            var image = new BitmapImage();
+            using (var mem = new MemoryStream(imageData))
+            {
+                mem.Position = 0;
+                image.BeginInit();
+                image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.DecodePixelWidth = 160;
+                image.DecodePixelHeight = 160;
+                image.UriSource = null;
+                image.StreamSource = mem;
+                image.EndInit();
+            }
+            image.Freeze();
+
+            return image;
         }
 
         //private string _queueFilePath;
