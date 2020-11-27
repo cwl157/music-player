@@ -175,10 +175,21 @@ namespace MusicPlayer.ViewModels
                // newAlbum.Songs = new ObservableCollection<Song>();
                 newAlbum.Title = name.Title;
                 newAlbum.TotalTracks = ss.Count();
-                var tfile = TagLib.File.Create(ss.First().FilePath);
-                if (tfile.Tag.Pictures.Length > 0)
+                var firstSong = ss.FirstOrDefault();
+                if (firstSong != null)
                 {
-                    newAlbum.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+                    try
+                    {
+                        var tfile = TagLib.File.Create(firstSong.FilePath);
+                        if (tfile.Tag.Pictures.Length > 0)
+                        {
+                            newAlbum.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // TODO: error handling and logging
+                    }
                 }
                 int outYear = 0;
                 int.TryParse(ss.First().Year, out outYear);
