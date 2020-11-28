@@ -207,22 +207,22 @@ namespace MusicPlayer.ViewModels
                // newAlbum.Songs = new ObservableCollection<Song>();
                 newAlbum.Title = name.Title;
                 newAlbum.TotalTracks = ss.Count();
-                //var firstSong = ss.FirstOrDefault();
-                //if (firstSong != null)
-                //{
-                //    try
-                //    {
-                //        var tfile = TagLib.File.Create(firstSong.FilePath);
-                //        if (tfile.Tag.Pictures.Length > 0)
-                //        {
-                //            newAlbum.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
-                //        }
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        // TODO: error handling and logging
-                //    }
-                //}
+                var firstSong = ss.FirstOrDefault();
+                if (firstSong != null)
+                {
+                    try
+                    {
+                        var tfile = TagLib.File.Create(firstSong.FilePath);
+                        if (tfile.Tag.Pictures.Length > 0)
+                        {
+                            newAlbum.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // TODO: error handling and logging
+                    }
+                }
                 int outYear = 0;
                 int.TryParse(ss.First().Year, out outYear);
                 newAlbum.Year = outYear;
@@ -258,29 +258,29 @@ namespace MusicPlayer.ViewModels
                 _allAlbums.Add(newAlbum);
             }
 
-            Task.Run(() =>
-            {
-                foreach (Album a in _allAlbums)
-                {
-                    var ss = songs.Where(t => t.Album == a.Title && int.Parse(t.Year) == a.Year);
-                    var firstSong = ss.FirstOrDefault();
-                    if (firstSong != null)
-                    {
-                        try
-                        {
-                            var tfile = TagLib.File.Create(firstSong.FilePath);
-                            if (tfile.Tag.Pictures.Length > 0)
-                            {
-                                a.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            // TODO: error handling and logging
-                        }
-                    }
-                }
-            });
+            //Task.Run(() =>
+            //{
+            //    foreach (Album a in _allAlbums)
+            //    {
+            //        var ss = songs.Where(t => t.Album == a.Title && int.Parse(t.Year) == a.Year);
+            //        var firstSong = ss.FirstOrDefault();
+            //        if (firstSong != null)
+            //        {
+            //            try
+            //            {
+            //                var tfile = TagLib.File.Create(firstSong.FilePath);
+            //                if (tfile.Tag.Pictures.Length > 0)
+            //                {
+            //                    a.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+            //                }
+            //            }
+            //            catch (Exception e)
+            //            {
+            //                // TODO: error handling and logging
+            //            }
+            //        }
+            //    }
+            //});
 
 
             Albums = new ObservableCollection<Album>(_allAlbums);
