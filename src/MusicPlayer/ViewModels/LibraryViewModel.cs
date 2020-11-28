@@ -26,7 +26,8 @@ namespace MusicPlayer.ViewModels
         private List<Album> _allAlbums;
         private List<Artist> _allArtists;
 
-        public ObservableCollection<Artist> Artists { get; private set; }
+        private ObservableCollection<Artist> _artists;
+        public ObservableCollection<Artist> Artists { get { return _artists; } set { SetProperty(ref _artists, value); } }
 
         private ObservableCollection<Album> _albums;
         public ObservableCollection<Album> Albums
@@ -49,21 +50,24 @@ namespace MusicPlayer.ViewModels
             set
             {
                 SetProperty(ref _selectedArtist, value);
-                _albums.Clear();
-                IEnumerable<Album> r = Enumerable.Empty<Album>();
-                //if (_selectedArtist.Name == "Show All")
-                if (_selectedIndex == 0)
+                if (_selectedArtist != null)
                 {
-                    r = _allAlbums;
-                }
-                else
-                {
-                    r = _allAlbums.Where(a => a.ArtistNames.Contains(SelectedArtist.Name));
-                }
-                
-                foreach (Album aa in r)
-                {
-                    _albums.Add(aa);
+                    _albums.Clear();
+                    IEnumerable<Album> r = Enumerable.Empty<Album>();
+                    if (_selectedArtist.Name.Contains("Show All ("))
+                    //if (_selectedIndex == 0)
+                    {
+                        r = _allAlbums;
+                    }
+                    else
+                    {
+                        r = _allAlbums.Where(a => a.ArtistNames.Contains(SelectedArtist.Name));
+                    }
+
+                    foreach (Album aa in r)
+                    {
+                        _albums.Add(aa);
+                    }
                 }
             }
         }
@@ -75,12 +79,39 @@ namespace MusicPlayer.ViewModels
         private Album _selectedAlbum;
         public Album SelectedAlbum { get { return _selectedAlbum; } set { SetProperty(ref _selectedAlbum, value); } }
 
-        private BitmapImage _ImageData;
-        public BitmapImage ImageData
+        //private BitmapImage _ImageData;
+        //public BitmapImage ImageData
+        //{
+        //    get { return this._ImageData; }
+        //    set { SetProperty(ref _ImageData, value); }
+        //}
+
+        private string _artistSearchText;
+        public string ArtistSearchText
         {
-            get { return this._ImageData; }
-            set { SetProperty(ref _ImageData, value); }
+            get { return _artistSearchText; }
+            set
+            {
+                SetProperty(ref _artistSearchText, value);
+                _artists.Clear();
+                IEnumerable<Artist> r = Enumerable.Empty<Artist>();
+                //if (_selectedArtist.Name == "Show All")
+                if (string.IsNullOrEmpty(_artistSearchText))
+                {
+                    r = _allArtists;
+                }
+                else
+                {
+                    r = _allArtists.Where(a => a.Name.ToLower().Contains(_artistSearchText.ToLower()));
+                }
+
+                foreach (Artist aa in r)
+                {
+                    _artists.Add(aa);
+                }
+            }
         }
+
 
         //private string _artistHeader;
         //public string ArtistHeader
