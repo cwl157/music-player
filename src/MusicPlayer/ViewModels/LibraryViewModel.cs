@@ -93,21 +93,23 @@ namespace MusicPlayer.ViewModels
             set
             {
                 SetProperty(ref _artistSearchText, value);
-                _artists.Clear();
-                IEnumerable<Artist> r = Enumerable.Empty<Artist>();
+                _albums.Clear();
+                //_artists.Clear();
+                IEnumerable<Album> r = Enumerable.Empty<Album>();
                 //if (_selectedArtist.Name == "Show All")
                 if (string.IsNullOrEmpty(_artistSearchText))
                 {
-                    r = _allArtists;
+                    r = _allAlbums;
                 }
                 else
                 {
-                    r = _allArtists.Where(a => a.Name.ToLower().Contains(_artistSearchText.ToLower()));
+                    string searchQuery = _artistSearchText.ToLower();
+                    r = _allAlbums.Where(a => a.DisplayArtist.ToLower().Contains(searchQuery) || a.Title.ToLower().Contains(searchQuery));
                 }
 
-                foreach (Artist aa in r)
+                foreach (Album aa in r)
                 {
-                    _artists.Add(aa);
+                    _albums.Add(aa);
                 }
             }
         }
@@ -232,6 +234,22 @@ namespace MusicPlayer.ViewModels
                 {
                     newAlbum.ArtistNames.Add(ns);
                 }
+                if (newAlbum.ArtistNames.Count == 0)
+                {
+                    newAlbum.DisplayArtist = "Unknown";
+                }
+                else if (newAlbum.ArtistNames.Count == 1)
+                {
+                    newAlbum.DisplayArtist = newAlbum.ArtistNames.First();
+                }
+                else if (newAlbum.ArtistNames.Count > 1)
+                {
+                    newAlbum.DisplayArtist = "Various Artists";
+                }
+                else
+                {
+                    newAlbum.DisplayArtist = "Unknown";
+                }
                 //newAlbum.ArtistNames.Add(ss.FirstOrDefault().Artist)
 
 
@@ -281,7 +299,7 @@ namespace MusicPlayer.ViewModels
             //        }
             //    }
             //});
-
+            _allAlbums = _allAlbums.OrderBy(a => a.DisplayArtist).ToList();
 
             Albums = new ObservableCollection<Album>(_allAlbums);
             _allArtists.Insert(0, new Artist { Name = "Show All (" + _allArtists.Count + ")", AlbumCount = Albums.Count, TrackCount = Albums.Sum(a => a.TotalTracks) });

@@ -19,5 +19,6 @@ namespace MusicPlayer.Model
 
       //  public ObservableCollection<Song> Songs { get; set; }
         public List<string> ArtistNames { get; set; }
+        public string DisplayArtist { get; set; }
     }
 }

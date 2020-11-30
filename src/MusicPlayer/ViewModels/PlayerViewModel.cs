@@ -184,6 +184,8 @@ namespace MusicPlayer.ViewModels
 
         public void AddToQueue(IEnumerable<Song> songs)
         {
+           // StopSongAction();
+           // ClearQueueAction();
             songs = songs.OrderByDescending(s=>s.Year).ThenBy(s => s.Album).ThenBy(s => s.TrackNumber);
             foreach (Song s in songs)
             {
@@ -202,6 +204,8 @@ namespace MusicPlayer.ViewModels
                 QueueInfo = SongList.Count + " songs - " + totalDuration.ToString(format);
             }
             SelectedIndex = 0;
+            SelectedSong = SongList[0];
+           // PlaySongAction();
         }
 
         #region CommandActions

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MusicPlayer"
         xmlns:player="clr-namespace:MusicPlayer.ViewModels"
         mc:Ignorable="d"
-        Title="Music Player" Height="700" Width="800">
+        Title="Music Player" Height="700" Width="900">
     <Window.Resources>
         <DataTemplate DataType="{x:Type player:PlayerViewModel}">
             <local:Player />
