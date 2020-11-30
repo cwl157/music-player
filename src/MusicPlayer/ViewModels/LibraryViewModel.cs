@@ -151,7 +151,14 @@ namespace MusicPlayer.ViewModels
 
             _selectedArtist = new Artist();
             _selectedAlbum = new Album();
-          
+
+            Load(songs);
+        }
+
+        public void Load(IEnumerable<Song> songs)
+        {
+            _allArtists.Clear();
+            _allAlbums.Clear();
             IEnumerable<string> artistNames = songs.Select(s => s.Artist).Distinct();
             artistNames = artistNames.OrderBy(s => s);
             foreach (string s in artistNames)
@@ -161,44 +168,8 @@ namespace MusicPlayer.ViewModels
                 var artistAlbums = artistSongs.Select(aa => new { title = aa.Album, year = aa.Year }).Distinct();
                 newArtist.AlbumCount = artistAlbums.Count();
                 newArtist.TrackCount = artistSongs.Count();
-
-                //var al = tmp.Select(aa => new { title = aa.Album, year = aa.Year }).Distinct();
-                //al = al.OrderByDescending(a => a.year);
-                //foreach (dynamic album in al)
-                //{
-                //    var ss = songs.Where(t => t.Artist == s && t.Album == album.title);
-
-                //    var newAlbum = new Album();
-                //    newAlbum.Songs = new ObservableCollection<Song>();
-                //    newAlbum.Title = album.title;
-
-                //    foreach (Song ts in ss)
-                //    {
-                //        newAlbum.Songs.Add(ts);
-                //    }
-
-                //    int outYear = 0;
-                //    int.TryParse(ss.First().Year, out outYear);
-                //    newAlbum.Year = outYear;
-                //    newAlbum.Duration = "00:00";
-                //    if (newAlbum.Songs.Count > 0)
-                //    {
-                //        double totalSeconds = newAlbum.Songs.Sum(s => s.Duration.TotalSeconds);
-                //        string format = "hh\\:mm\\:ss";
-                //        if (totalSeconds < 3600)
-                //        {
-                //            format = "mm\\:ss";
-                //        }
-                //        TimeSpan totalDuration = TimeSpan.FromSeconds(totalSeconds);
-                //        newAlbum.Duration = totalDuration.ToString(format);
-                //    }
-                //    newArtist.Albums.Add(newAlbum);
-                //   // Albums.Add(newAlbum);
-                //}
                 _allArtists.Add(newArtist);
             }
-
-           
 
             var albumNames = songs.Select(s => new { Title = s.Album, Year = s.Year }).Distinct();
             albumNames = albumNames.OrderByDescending(a => a.Year);
@@ -206,7 +177,6 @@ namespace MusicPlayer.ViewModels
             {
                 var ss = songs.Where(t => t.Album == name.Title && t.Year == name.Year);
                 var newAlbum = new Album();
-               // newAlbum.Songs = new ObservableCollection<Song>();
                 newAlbum.Title = name.Title;
                 newAlbum.TotalTracks = ss.Count();
                 var firstSong = ss.FirstOrDefault();
@@ -250,17 +220,6 @@ namespace MusicPlayer.ViewModels
                 {
                     newAlbum.DisplayArtist = "Unknown";
                 }
-                //newAlbum.ArtistNames.Add(ss.FirstOrDefault().Artist)
-
-
-                //foreach (Song ts in ss)
-                //{
-                //    newAlbum.Songs.Add(ts);
-                //}
-
-                //int outYear = 0;
-                //int.TryParse(ss.First().Year, out outYear);
-                //newAlbum.Year = outYear;
                 newAlbum.Duration = "00:00";
                 if (ss.Count() > 0)
                 {
@@ -276,44 +235,11 @@ namespace MusicPlayer.ViewModels
                 _allAlbums.Add(newAlbum);
             }
 
-            //Task.Run(() =>
-            //{
-            //    foreach (Album a in _allAlbums)
-            //    {
-            //        var ss = songs.Where(t => t.Album == a.Title && int.Parse(t.Year) == a.Year);
-            //        var firstSong = ss.FirstOrDefault();
-            //        if (firstSong != null)
-            //        {
-            //            try
-            //            {
-            //                var tfile = TagLib.File.Create(firstSong.FilePath);
-            //                if (tfile.Tag.Pictures.Length > 0)
-            //                {
-            //                    a.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
-            //                }
-            //            }
-            //            catch (Exception e)
-            //            {
-            //                // TODO: error handling and logging
-            //            }
-            //        }
-            //    }
-            //});
             _allAlbums = _allAlbums.OrderBy(a => a.DisplayArtist).ToList();
 
             Albums = new ObservableCollection<Album>(_allAlbums);
             _allArtists.Insert(0, new Artist { Name = "Show All (" + _allArtists.Count + ")", AlbumCount = Albums.Count, TrackCount = Albums.Sum(a => a.TotalTracks) });
             Artists = new ObservableCollection<Artist>(_allArtists);
-
-            //Albums.Insert(0, "Show All");
-
-            //var allAlbums = songs.Select(aa => new { title = aa.Album, year = aa.Year }).Distinct();
-            //al = al.OrderByDescending(a => a.year);
-
-            //Artists = Artists.OrderBy(a => a.Name);
-            //ArtistHeader = "Artists (" + Artists.Count + ")";
-            //AlbumHeader = "Albums (" + Artists.Sum(a => a.AlbumCount) + ")";
-            //TrackHeader = "Tracks (" + Artists.Sum(a => a.TrackCount) + ")";
         }
 
         private static BitmapImage LoadImage(byte[] imageData)

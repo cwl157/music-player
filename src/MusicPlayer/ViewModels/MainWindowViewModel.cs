@@ -47,6 +47,12 @@ namespace MusicPlayer.ViewModels
             SettingsViewModel = new SettingsViewModel();
             LibraryViewModel.AddToQueueRequested += AddToPlayerQueue;
             LibraryViewModel.ClearQueueRequested += ClearPlayerQueue;
+            SettingsViewModel.RefreshLibraryRequested += SettingsViewModel_RefreshLibraryRequested;
+        }
+
+        private void SettingsViewModel_RefreshLibraryRequested(List<Song> obj)
+        {
+            LibraryViewModel.Load(obj);
         }
 
         private void AddToPlayerQueue()

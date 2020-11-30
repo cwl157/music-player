@@ -14,6 +14,7 @@ namespace MusicPlayer.ViewModels
 {
     public class SettingsViewModel : BindableBase
     {
+        public event Action<List<Song>> RefreshLibraryRequested = delegate { };
         public string LibraryFolderPath { get; set; }
 
         private string _refreshStatus;
@@ -52,6 +53,7 @@ namespace MusicPlayer.ViewModels
                     string result = JsonSerializer.Serialize(songs, options);
                     File.WriteAllText(@".\library.json", result);
                     RefreshStatus = "Refresh Complete";
+                    RefreshLibraryRequested(songs);
                 }
             });            
         }
