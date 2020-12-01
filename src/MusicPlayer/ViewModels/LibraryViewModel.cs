@@ -20,11 +20,20 @@ namespace MusicPlayer.ViewModels
     {
         public ICommand AddToQueueClick { get; private set; }
         public ICommand ClearQueueClick { get; private set; }
+        public ICommand FirstPageClick { get; private set; }
+        public ICommand PreviousPageClick { get; private set; }
+        public ICommand NextPageClick { get; private set; }
+        public ICommand LastPageClick { get; private set; }
+
         public event Action AddToQueueRequested = delegate { };
         public event Action ClearQueueRequested = delegate { };
 
         private List<Album> _allAlbums;
         private List<Artist> _allArtists;
+        private List<Album> _filteredAlbums;
+        private int _itemsPerPage;
+        private int _currentPage;
+        private int _totalPages;
 
         private ObservableCollection<Artist> _artists;
         public ObservableCollection<Artist> Artists { get { return _artists; } set { SetProperty(ref _artists, value); } }
@@ -79,6 +88,13 @@ namespace MusicPlayer.ViewModels
         private Album _selectedAlbum;
         public Album SelectedAlbum { get { return _selectedAlbum; } set { SetProperty(ref _selectedAlbum, value); } }
 
+        private string _pageText;
+        public string PageText
+        {
+            get { return _pageText; }
+            set { SetProperty(ref _pageText, value); }
+        }
+
         //private BitmapImage _ImageData;
         //public BitmapImage ImageData
         //{
@@ -87,15 +103,16 @@ namespace MusicPlayer.ViewModels
         //}
 
         private string _artistSearchText;
+        
         public string ArtistSearchText
         {
             get { return _artistSearchText; }
             set
             {
                 SetProperty(ref _artistSearchText, value);
-                _albums.Clear();
+              //  _albums.Clear();
                 //_artists.Clear();
-                IEnumerable<Album> r = Enumerable.Empty<Album>();
+                List<Album> r = new List<Album>();
                 //if (_selectedArtist.Name == "Show All")
                 if (string.IsNullOrEmpty(_artistSearchText))
                 {
@@ -104,13 +121,48 @@ namespace MusicPlayer.ViewModels
                 else
                 {
                     string searchQuery = _artistSearchText.ToLower();
-                    r = _allAlbums.Where(a => a.DisplayArtist.ToLower().Contains(searchQuery) || a.Title.ToLower().Contains(searchQuery));
+                    r = _allAlbums.Where(a => a.DisplayArtist.ToLower().Contains(searchQuery) || a.Title.ToLower().Contains(searchQuery)).ToList();
                 }
 
-                foreach (Album aa in r)
+                _filteredAlbums.Clear();
+                foreach (Album a in r)
                 {
-                    _albums.Add(aa);
+                    _filteredAlbums.Add(a);
                 }
+
+                // recalc pages based on search results
+               // _itemsPerPage = 10;
+                _currentPage = 0;
+                _totalPages = 0;
+                // page it
+
+                _totalPages = r.Count / _itemsPerPage;
+                if (r.Count % _itemsPerPage != 0)
+                {
+                    _totalPages += 1;
+                }
+
+              //  Albums.Clear();
+                PageAlbums();
+                // _currentPage = 1;
+                // _itemsPerPage = 10;
+                //int startingIndex = _currentPage * _itemsPerPage;
+                //int endingIndex = (_currentPage + 1) * _itemsPerPage;
+
+                //for (int i = startingIndex; i < endingIndex; i++)
+                //{
+                //    if (i >= .Count)
+                //    {
+                //        break;
+                //    }
+                //    Albums.Add(r[i]);
+                //}
+
+                //foreach (Album aa in r)
+                //{
+                //    _albums.Add(aa);
+                //}
+                //_currentPage = 0;
             }
         }
 
@@ -145,14 +197,30 @@ namespace MusicPlayer.ViewModels
             //ImageData = LoadImage(@"D:\My Music\Full Albums\ANCST\Summits of Despondency\cover.jpg");
             AddToQueueClick = new CommandHandler(() => AddToQueueAction(), () => true);
             ClearQueueClick = new CommandHandler(() => ClearQueueAction(), () => true);
+            FirstPageClick = new CommandHandler(() => FirstPageAction(), () => true);
+            PreviousPageClick = new CommandHandler(() => PreviousPageAction(), () => true);
+            NextPageClick = new CommandHandler(() => NextPageAction(), () => true);
+            LastPageClick = new CommandHandler(() => LastPageAction(), () => true);
+            Albums = new ObservableCollection<Album>();
+            _itemsPerPage = 10;
+            _currentPage = 0;
+            _totalPages = 0;
 
             _allArtists = new List<Artist>();
             _allAlbums = new List<Album>();
+//            _filteredAlbums = new List<Album>();
 
             _selectedArtist = new Artist();
             _selectedAlbum = new Album();
 
             Load(songs);
+            _filteredAlbums = new List<Album>(_allAlbums);
+            _totalPages = _allAlbums.Count / _itemsPerPage;
+            if (_allAlbums.Count % _itemsPerPage != 0)
+            {
+                _totalPages += 1;
+            }
+            PageAlbums();
         }
 
         public void Load(IEnumerable<Song> songs)
@@ -237,7 +305,7 @@ namespace MusicPlayer.ViewModels
 
             _allAlbums = _allAlbums.OrderBy(a => a.DisplayArtist).ToList();
 
-            Albums = new ObservableCollection<Album>(_allAlbums);
+          //  Albums = new ObservableCollection<Album>(_allAlbums);
             _allArtists.Insert(0, new Artist { Name = "Show All (" + _allArtists.Count + ")", AlbumCount = Albums.Count, TrackCount = Albums.Sum(a => a.TotalTracks) });
             Artists = new ObservableCollection<Artist>(_allArtists);
         }
@@ -278,6 +346,69 @@ namespace MusicPlayer.ViewModels
         private void ClearQueueAction()
         {
             ClearQueueRequested();
+        }
+
+        private void FirstPageAction()
+        {
+           if (_currentPage != 0)
+            {
+                _currentPage = 0;
+                PageAlbums();
+            }
+        }
+
+        private void PreviousPageAction()
+        {
+            if (_currentPage > 0)
+            {
+                _currentPage--;
+                PageAlbums();
+            }
+        }
+
+        private void NextPageAction()
+        {
+            if (_currentPage < _totalPages - 1)
+            {
+                _currentPage++;
+                PageAlbums();
+            }
+        }
+
+        private void LastPageAction()
+        {
+            if (_currentPage != _totalPages - 1)
+            {
+                _currentPage = _totalPages - 1;
+                PageAlbums();
+            }
+        }
+
+        private void PageAlbums()
+        {
+            Albums.Clear();
+
+           // _currentPage = 1;
+           // _itemsPerPage = 10;
+            int startingIndex = _currentPage * _itemsPerPage;
+            int endingIndex = (_currentPage + 1) * _itemsPerPage;
+
+            for (int i = startingIndex; i < endingIndex; i++)
+            {
+                if (i >= _filteredAlbums.Count)
+                {
+                    break;
+                }
+                Albums.Add(_filteredAlbums[i]);
+            }
+
+            int displayStartingIndex = startingIndex + 1;
+            int displayEndingIndex = endingIndex;
+            if (endingIndex >= _filteredAlbums.Count)
+            {
+                displayEndingIndex = _filteredAlbums.Count;
+            }
+            PageText = displayStartingIndex + " - " + displayEndingIndex + " / " + _filteredAlbums.Count; //10 - 19 / 100
         }
     }
 }

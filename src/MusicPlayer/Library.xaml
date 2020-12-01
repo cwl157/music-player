@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:MusicPlayer"
              mc:Ignorable="d" 
              d:DesignHeight="640" d:DesignWidth="800">
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*">
@@ -23,9 +23,14 @@
             </RowDefinition>
         </Grid.RowDefinitions>
         <!--<Label Grid.Row="0" Grid.Column="0" Content="Artist Search: " HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"/> -->
-        <TextBox HorizontalAlignment="Left" Margin="5,0,0,0" Text="{Binding ArtistSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
-        <Button Grid.Column="0" Content="Add to Queue" Command="{Binding AddToQueueClick}" HorizontalAlignment="Left" Margin="215,0,0,0" VerticalAlignment="Center"/>
-        <Button Grid.Row="0" Grid.Column="0" Content="Clear Queue" Command="{Binding ClearQueueClick}" HorizontalAlignment="Left" Margin="300,18,0,0" VerticalAlignment="Top" Width="75"/>
+        <TextBox HorizontalAlignment="Left" Margin="5,0,0,0" Text="{Binding ArtistSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged" TextWrapping="Wrap" VerticalAlignment="Top" Width="200"/>
+        <Button Grid.Column="0" Content="Add to Queue" Command="{Binding AddToQueueClick}" HorizontalAlignment="Left" Margin="215,0,0,0" VerticalAlignment="Top"/>
+        <Button Grid.Row="0" Grid.Column="0" Content="Clear Queue" Command="{Binding ClearQueueClick}" HorizontalAlignment="Left" Margin="300,0,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Grid.Row="0" Grid.Column="0" Content="&lt;&lt;" Command="{Binding FirstPageClick}" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Bottom" Width="50"/>
+        <Button Grid.Row="0" Grid.Column="0" Content="&lt;" Command="{Binding PreviousPageClick}" HorizontalAlignment="Left" Margin="60,0,0,0" VerticalAlignment="Bottom" Width="50"/>
+        <Label Content="{Binding PageText}" HorizontalAlignment="Left" Margin="111,0,0,0" VerticalAlignment="Bottom"/>
+        <Button Grid.Row="0" Grid.Column="0" Content="&gt;" Command="{Binding NextPageClick}" HorizontalAlignment="Left" Margin="213,0,0,0" VerticalAlignment="Bottom" Width="50"/>
+        <Button Grid.Row="0" Grid.Column="0" Content="&gt;&gt;" Command="{Binding LastPageClick}" HorizontalAlignment="Left" Margin="268,0,0,0" VerticalAlignment="Bottom" Width="50"/>
         <!--<ListView ItemsSource="{Binding Artists}" SelectedItem="{Binding SelectedArtist}" SelectedIndex="{Binding SelectedIndex}" Grid.Column="0" Grid.Row="1" SelectionMode="Single">
             <ListView.View>
                 <GridView>
@@ -76,6 +81,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
+
 
 
 
