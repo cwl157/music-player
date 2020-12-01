@@ -23,6 +23,18 @@ namespace MusicPlayer.ViewModels
 
         public MainWindowViewModel(IMusicPlayer player)
         {
+            LoadSongs();
+
+            PlayerViewModel = new PlayerViewModel(player);
+            LibraryViewModel = new LibraryViewModel(_songs);
+            SettingsViewModel = new SettingsViewModel();
+            LibraryViewModel.AddToQueueRequested += AddToPlayerQueue;
+            LibraryViewModel.ClearQueueRequested += ClearPlayerQueue;
+            SettingsViewModel.RefreshLibraryRequested += SettingsViewModel_RefreshLibraryRequested;
+        }
+
+        private void LoadSongs()
+        {
             _songs = new List<Song>();
             try
             {
@@ -35,24 +47,19 @@ namespace MusicPlayer.ViewModels
                 else
                 {
                     _songs.Add(new Song { Artist = "No library found. Please go to settings tab to configure your library" });
-                }  
+                }
             }
             catch (Exception e)
             {
                 _songs.Add(new Song { Artist = "Error loading library. Please go to settings tab and try refreshing the library", Album = e.Message });
             }
-
-            PlayerViewModel = new PlayerViewModel(player);
-            LibraryViewModel = new LibraryViewModel(_songs);
-            SettingsViewModel = new SettingsViewModel();
-            LibraryViewModel.AddToQueueRequested += AddToPlayerQueue;
-            LibraryViewModel.ClearQueueRequested += ClearPlayerQueue;
-            SettingsViewModel.RefreshLibraryRequested += SettingsViewModel_RefreshLibraryRequested;
         }
 
         private void SettingsViewModel_RefreshLibraryRequested(List<Song> obj)
         {
-            LibraryViewModel.Load(obj);
+            //  LoadSongs();
+            _songs = obj;
+            LibraryViewModel.Refresh(_songs);
         }
 
         private void AddToPlayerQueue()

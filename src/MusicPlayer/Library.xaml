@@ -81,6 +81,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
+        <Label Content="{Binding LoadingStatus}" HorizontalAlignment="Left" Margin="484,10,0,0" VerticalAlignment="Top"/>
 
 
 

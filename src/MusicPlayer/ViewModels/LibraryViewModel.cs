@@ -35,6 +35,13 @@ namespace MusicPlayer.ViewModels
         private int _currentPage;
         private int _totalPages;
 
+        private string _loadingStatus;
+        public string LoadingStatus
+        {
+            get { return _loadingStatus; }
+            set { SetProperty(ref _loadingStatus, value); }
+        }
+
         private ObservableCollection<Artist> _artists;
         public ObservableCollection<Artist> Artists { get { return _artists; } set { SetProperty(ref _artists, value); } }
 
@@ -205,6 +212,7 @@ namespace MusicPlayer.ViewModels
             _itemsPerPage = 10;
             _currentPage = 0;
             _totalPages = 0;
+            LoadingStatus = "Loading...";
 
             _allArtists = new List<Artist>();
             _allAlbums = new List<Album>();
@@ -213,14 +221,43 @@ namespace MusicPlayer.ViewModels
             _selectedArtist = new Artist();
             _selectedAlbum = new Album();
 
-            Load(songs);
-            _filteredAlbums = new List<Album>(_allAlbums);
-            _totalPages = _allAlbums.Count / _itemsPerPage;
-            if (_allAlbums.Count % _itemsPerPage != 0)
+            Refresh(songs);
+
+            //Task.Run(() =>
+            //{
+            //    Load(songs);
+            //    _filteredAlbums = new List<Album>(_allAlbums);
+            //    _totalPages = _allAlbums.Count / _itemsPerPage;
+            //    if (_allAlbums.Count % _itemsPerPage != 0)
+            //    {
+            //        _totalPages += 1;
+            //    }
+            //    LoadingStatus = "";
+            //    Application.Current.Dispatcher.Invoke(() =>
+            //    {
+            //        PageAlbums();
+            //    });
+            //});    
+        }
+
+        public void Refresh(IEnumerable<Song> songs)
+        {
+            LoadingStatus = "Loading...";
+            Task.Run(() =>
             {
-                _totalPages += 1;
-            }
-            PageAlbums();
+                Load(songs);
+                _filteredAlbums = new List<Album>(_allAlbums);
+                _totalPages = _allAlbums.Count / _itemsPerPage;
+                if (_allAlbums.Count % _itemsPerPage != 0)
+                {
+                    _totalPages += 1;
+                }
+                LoadingStatus = "";
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    PageAlbums();
+                });
+            });
         }
 
         public void Load(IEnumerable<Song> songs)
