@@ -35,11 +35,18 @@ namespace MusicPlayer.ViewModels
         private int _currentPage;
         private int _totalPages;
 
-        private string _loadingStatus;
-        public string LoadingStatus
+        //private string _loadingStatus;
+        //public string LoadingStatus
+        //{
+        //    get { return _loadingStatus; }
+        //    set { SetProperty(ref _loadingStatus, value); }
+        //}
+
+        private bool _isLoading;
+        public bool IsLoading
         {
-            get { return _loadingStatus; }
-            set { SetProperty(ref _loadingStatus, value); }
+            get { return _isLoading; }
+            set { SetProperty(ref _isLoading, value); }
         }
 
         private ObservableCollection<Artist> _artists;
@@ -212,7 +219,8 @@ namespace MusicPlayer.ViewModels
             _itemsPerPage = 10;
             _currentPage = 0;
             _totalPages = 0;
-            LoadingStatus = "Loading...";
+            // LoadingStatus = "Loading...";
+            IsLoading = true;
 
             _allArtists = new List<Artist>();
             _allAlbums = new List<Album>();
@@ -242,7 +250,8 @@ namespace MusicPlayer.ViewModels
 
         public void Refresh(IEnumerable<Song> songs)
         {
-            LoadingStatus = "Loading...";
+            // LoadingStatus = "Loading...";
+            IsLoading = true;
             Task.Run(() =>
             {
                 Load(songs);
@@ -252,7 +261,8 @@ namespace MusicPlayer.ViewModels
                 {
                     _totalPages += 1;
                 }
-                LoadingStatus = "";
+                // LoadingStatus = "";
+                IsLoading = false;
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     PageAlbums();

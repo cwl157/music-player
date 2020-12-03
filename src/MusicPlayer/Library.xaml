@@ -81,11 +81,12 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Label Content="{Binding LoadingStatus}" HorizontalAlignment="Left" Margin="484,10,0,0" VerticalAlignment="Top"/>
 
 
-
-
-
+        <Rectangle Fill="White" Grid.ColumnSpan="2" Grid.RowSpan="2" Opacity="0.7" Visibility="{Binding IsLoading, 
+        Converter={StaticResource BoolToVis}}" />
+        <Label Content="Loading..." Grid.ColumnSpan="2" Grid.Row="2" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Visibility="{Binding IsLoading, 
+        Converter={StaticResource BoolToVis}}" />
     </Grid>
+    
 </UserControl>
