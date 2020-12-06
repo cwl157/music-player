@@ -23,7 +23,7 @@ namespace MusicPlayer.Services
             // First, process all the files directly under this folder
             try
             {
-                files = root.GetFiles("*.*");
+                files = root.GetFiles("*.mp3");
                 
             }
             // This is thrown if even one of the files requires permissions greater
@@ -69,15 +69,6 @@ namespace MusicPlayer.Services
                             //}
                             s.Year = tfile.Tag.Year.ToString();
                             result.Add(s);
-                        }
-
-                        // Now find all the subdirectories under this directory.
-                        subDirs = root.GetDirectories();
-
-                        foreach (System.IO.DirectoryInfo dirInfo in subDirs)
-                        {
-                            // Resursive call for each subdirectory.
-                            WalkDirectoryTree(dirInfo, result);
                         }
                     }
                 }
