@@ -75,35 +75,68 @@ namespace MusicPlayer.ViewModels
             set
             {
                 SetProperty(ref _artistSearchText, value);
-
-                List<Album> r = new List<Album>();
-                if (string.IsNullOrEmpty(_artistSearchText))
-                {
-                    r = _allAlbums;
-                }
-                else
-                {
-                    string searchQuery = _artistSearchText.ToLower();
-                    r = _allAlbums.Where(a => a.DisplayArtist.ToLower().Contains(searchQuery) || a.Title.ToLower().Contains(searchQuery)).ToList();
-                }
-
-                _filteredAlbums.Clear();
-                foreach (Album a in r)
-                {
-                    _filteredAlbums.Add(a);
-                }
-
-                _currentPage = 0;
-                _totalPages = 0;
-
-                _totalPages = r.Count / _itemsPerPage;
-                if (r.Count % _itemsPerPage != 0)
-                {
-                    _totalPages += 1;
-                }
-
-                PageAlbums();
+                filter();
             }
+        }
+
+        private List<string> _albumYears;
+        public List<String> AlbumYears
+        {
+            get { return _albumYears; }
+            set { SetProperty(ref _albumYears, value); }
+        }
+
+        private string _selectedYear;
+        public string SelectedYear
+        {
+            get { return _selectedYear; }
+            set
+            {
+                SetProperty(ref _selectedYear, value);
+                filter();
+            }
+        }
+
+
+        private void filter()
+        {
+            List<Album> r = new List<Album>();
+
+            if (!string.IsNullOrEmpty(_selectedYear) && !string.IsNullOrEmpty(_artistSearchText))
+            {
+                string searchQuery = _artistSearchText.ToLower();
+                r = _allAlbums.Where(a => a.DisplayArtist.ToLower().Contains(searchQuery) || a.Title.ToLower().Contains(searchQuery)).Where(a => a.Year == int.Parse(_selectedYear)).ToList();
+            }
+            else if (!string.IsNullOrEmpty(_selectedYear) && string.IsNullOrEmpty(_artistSearchText))
+            {
+                r = _allAlbums.Where(a => a.Year == int.Parse(_selectedYear)).ToList();
+            }
+            else if (string.IsNullOrEmpty(_selectedYear) && !string.IsNullOrEmpty(_artistSearchText))
+            {
+                string searchQuery = _artistSearchText.ToLower();
+                r = _allAlbums.Where(a => a.DisplayArtist.ToLower().Contains(searchQuery) || a.Title.ToLower().Contains(searchQuery)).ToList();
+            }
+            else if (string.IsNullOrEmpty(_selectedYear) && string.IsNullOrEmpty(_artistSearchText))
+            {
+                r = _allAlbums;
+            }
+
+            _filteredAlbums.Clear();
+            foreach (Album a in r)
+            {
+                _filteredAlbums.Add(a);
+            }
+
+            _currentPage = 0;
+            _totalPages = 0;
+
+            _totalPages = r.Count / _itemsPerPage;
+            if (r.Count % _itemsPerPage != 0)
+            {
+                _totalPages += 1;
+            }
+
+            PageAlbums();
         }
 
         #endregion
@@ -122,6 +155,7 @@ namespace MusicPlayer.ViewModels
             _totalPages = 0;
             _allAlbums = new List<Album>();
             _selectedAlbum = new Album();
+            _albumYears = new List<string>();
 
             IsLoading = true;
             Refresh(songs);   
@@ -133,6 +167,15 @@ namespace MusicPlayer.ViewModels
             Task.Run(() =>
             {
                 Load(songs);
+                var years = _allAlbums.Select(a => a.Year).Distinct().OrderByDescending(y => y);
+                _albumYears.Clear();
+                _albumYears.Add("");
+                _selectedYear = "";
+                foreach (int y in years)
+                {
+                    _albumYears.Add(y.ToString());
+                }
+
                 _filteredAlbums = new List<Album>(_allAlbums);
                 _totalPages = _allAlbums.Count / _itemsPerPage;
                 if (_allAlbums.Count % _itemsPerPage != 0)

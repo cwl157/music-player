@@ -26,34 +26,14 @@
         <TextBox HorizontalAlignment="Left" Margin="5,0,0,0" Text="{Binding ArtistSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="200"/>
         <Button Grid.Column="0" Content="Add to Queue" Command="{Binding AddToQueueClick}" HorizontalAlignment="Left" Margin="215,0,0,0" VerticalAlignment="Top"/>
         <Button Grid.Row="0" Grid.Column="0" Content="Clear Queue" Command="{Binding ClearQueueClick}" HorizontalAlignment="Left" Margin="300,0,0,0" VerticalAlignment="Top" Width="75"/>
+        <ComboBox HorizontalAlignment="Left" Margin="400,0,0,0" ItemsSource="{Binding AlbumYears}" SelectedItem="{Binding SelectedYear}" VerticalAlignment="Top" Width="100"/>
         <Button Grid.Row="0" Grid.Column="0" Content="&lt;&lt;" Command="{Binding FirstPageClick}" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Bottom" Width="50"/>
         <Button Grid.Row="0" Grid.Column="0" Content="&lt;" Command="{Binding PreviousPageClick}" HorizontalAlignment="Left" Margin="60,0,0,0" VerticalAlignment="Bottom" Width="50"/>
         <Label Content="{Binding PageText}" HorizontalAlignment="Left" Margin="111,0,0,0" VerticalAlignment="Bottom"/>
         <Button Grid.Row="0" Grid.Column="0" Content="&gt;" Command="{Binding NextPageClick}" HorizontalAlignment="Left" Margin="213,0,0,0" VerticalAlignment="Bottom" Width="50"/>
         <Button Grid.Row="0" Grid.Column="0" Content="&gt;&gt;" Command="{Binding LastPageClick}" HorizontalAlignment="Left" Margin="268,0,0,0" VerticalAlignment="Bottom" Width="50"/>
-        <!--<ListView ItemsSource="{Binding Artists}" SelectedItem="{Binding SelectedArtist}" SelectedIndex="{Binding SelectedIndex}" Grid.Column="0" Grid.Row="1" SelectionMode="Single">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Artist" Width="150"  DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Albums" Width="125" DisplayMemberBinding="{Binding AlbumCount}" />
-                    <GridViewColumn Header="Tracks" Width="75" DisplayMemberBinding="{Binding TrackCount}" />
-                </GridView>
-            </ListView.View>
-        </ListView>-->
 
         <ListView Visibility="Visible" x:Name="TvBox"  ItemsSource="{Binding Albums}"  SelectedItem="{Binding SelectedAlbum}" Grid.Column="0" Grid.Row="1"  VerticalAlignment="Top">
-            <!--<ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                <ContentPresenter />
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.ItemContainerStyle>-->
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid Columns="5" />
@@ -87,6 +67,7 @@
         Converter={StaticResource BoolToVis}}" />
         <Label Content="Loading..." Grid.ColumnSpan="2" Grid.Row="2" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Visibility="{Binding IsLoading, 
         Converter={StaticResource BoolToVis}}" />
+       
     </Grid>
     
 </UserControl>
