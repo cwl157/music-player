@@ -23,10 +23,5 @@ namespace MusicPlayer
         {
             InitializeComponent();
         }
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Debug.WriteLine("TextBox_TextChanged");
-        }
     }
 }

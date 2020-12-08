@@ -11,7 +11,6 @@ namespace MusicPlayer.Model
         public string Title { get; set; }
         public string FilePath { get; set; }
         public int TrackNumber { get; set; }
-       // [JsonConverter(typeof(JsonTimeSpanConverter))]
         public TimeSpan Duration { get; set; }
         public string DisplayDuration
         { get
@@ -20,7 +19,6 @@ namespace MusicPlayer.Model
             }
         }
         public string Lyrics { get; set; }
-       // public BitmapImage AlbumArt { get; set; }
         public string Year { get; set; } 
     }
 }

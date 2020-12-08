@@ -14,8 +14,17 @@ namespace MusicPlayer.ViewModels
 {
     public class SettingsViewModel : BindableBase
     {
+        private ILibraryLoader _loader;
+
         public event Action<List<Song>> RefreshLibraryRequested = delegate { };
         public string LibraryFolderPath { get; set; }
+
+        public SettingsViewModel(ILibraryLoader loader)
+        {
+            RefreshStatus = "Not Started";
+            RefreshLibrary = new CommandHandler(() => RefreshLibraryAction(), () => true);
+            _loader = loader;
+        }
 
         private string _refreshStatus;
         public string RefreshStatus
@@ -26,15 +35,9 @@ namespace MusicPlayer.ViewModels
 
         public ICommand RefreshLibrary { get; private set; }
 
-        public SettingsViewModel()
-        {
-            RefreshStatus = "Not Started";
-            RefreshLibrary = new CommandHandler(() => RefreshLibraryAction(), () => true);
-        }
-
         private void RefreshLibraryAction()
         {
-            IQueueLoader ql = new FileQueueLoader();
+           // ILibraryLoader fl = new FileLibraryLoader();
 
             RefreshStatus = "Refreshing...";
             Task.Run(() =>
@@ -46,10 +49,9 @@ namespace MusicPlayer.ViewModels
                 }
                 else
                 {
-                    ql.WalkDirectoryTree(new DirectoryInfo(LibraryFolderPath), songs);
+                    _loader.Load(new DirectoryInfo(LibraryFolderPath), songs);
 
                     var options = new JsonSerializerOptions { Converters = { new TimeSpanConverter() } };
-                    //  JsonSerializer.Serialize(myObj, options);
                     string result = JsonSerializer.Serialize(songs, options);
                     File.WriteAllText(@".\library.json", result);
                     RefreshStatus = "Refresh Complete";

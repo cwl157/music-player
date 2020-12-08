@@ -18,39 +18,29 @@ namespace MusicPlayer.ViewModels
 {
     public class LibraryViewModel : BindableBase
     {
+        private List<Album> _allAlbums;
+        private List<Album> _filteredAlbums;
+        private int _itemsPerPage;
+        private int _currentPage;
+        private int _totalPages;
+
         public ICommand AddToQueueClick { get; private set; }
         public ICommand ClearQueueClick { get; private set; }
         public ICommand FirstPageClick { get; private set; }
         public ICommand PreviousPageClick { get; private set; }
         public ICommand NextPageClick { get; private set; }
         public ICommand LastPageClick { get; private set; }
-
         public event Action AddToQueueRequested = delegate { };
         public event Action ClearQueueRequested = delegate { };
 
-        private List<Album> _allAlbums;
-        private List<Artist> _allArtists;
-        private List<Album> _filteredAlbums;
-        private int _itemsPerPage;
-        private int _currentPage;
-        private int _totalPages;
 
-        //private string _loadingStatus;
-        //public string LoadingStatus
-        //{
-        //    get { return _loadingStatus; }
-        //    set { SetProperty(ref _loadingStatus, value); }
-        //}
-
+        #region ViewBindedProperties
         private bool _isLoading;
         public bool IsLoading
         {
             get { return _isLoading; }
             set { SetProperty(ref _isLoading, value); }
         }
-
-        private ObservableCollection<Artist> _artists;
-        public ObservableCollection<Artist> Artists { get { return _artists; } set { SetProperty(ref _artists, value); } }
 
         private ObservableCollection<Album> _albums;
         public ObservableCollection<Album> Albums
@@ -61,38 +51,6 @@ namespace MusicPlayer.ViewModels
 
             }
             set { SetProperty(ref _albums, value); }
-        }
-
-        private Artist _selectedArtist;
-        public Artist SelectedArtist
-        {
-            get
-            {
-                return _selectedArtist;
-            }
-            set
-            {
-                SetProperty(ref _selectedArtist, value);
-                if (_selectedArtist != null)
-                {
-                    _albums.Clear();
-                    IEnumerable<Album> r = Enumerable.Empty<Album>();
-                    if (_selectedArtist.Name.Contains("Show All ("))
-                    //if (_selectedIndex == 0)
-                    {
-                        r = _allAlbums;
-                    }
-                    else
-                    {
-                        r = _allAlbums.Where(a => a.ArtistNames.Contains(SelectedArtist.Name));
-                    }
-
-                    foreach (Album aa in r)
-                    {
-                        _albums.Add(aa);
-                    }
-                }
-            }
         }
 
         private int _selectedIndex;
@@ -109,13 +67,6 @@ namespace MusicPlayer.ViewModels
             set { SetProperty(ref _pageText, value); }
         }
 
-        //private BitmapImage _ImageData;
-        //public BitmapImage ImageData
-        //{
-        //    get { return this._ImageData; }
-        //    set { SetProperty(ref _ImageData, value); }
-        //}
-
         private string _artistSearchText;
         
         public string ArtistSearchText
@@ -124,10 +75,8 @@ namespace MusicPlayer.ViewModels
             set
             {
                 SetProperty(ref _artistSearchText, value);
-              //  _albums.Clear();
-                //_artists.Clear();
+
                 List<Album> r = new List<Album>();
-                //if (_selectedArtist.Name == "Show All")
                 if (string.IsNullOrEmpty(_artistSearchText))
                 {
                     r = _allAlbums;
@@ -144,11 +93,8 @@ namespace MusicPlayer.ViewModels
                     _filteredAlbums.Add(a);
                 }
 
-                // recalc pages based on search results
-               // _itemsPerPage = 10;
                 _currentPage = 0;
                 _totalPages = 0;
-                // page it
 
                 _totalPages = r.Count / _itemsPerPage;
                 if (r.Count % _itemsPerPage != 0)
@@ -156,59 +102,14 @@ namespace MusicPlayer.ViewModels
                     _totalPages += 1;
                 }
 
-              //  Albums.Clear();
                 PageAlbums();
-                // _currentPage = 1;
-                // _itemsPerPage = 10;
-                //int startingIndex = _currentPage * _itemsPerPage;
-                //int endingIndex = (_currentPage + 1) * _itemsPerPage;
-
-                //for (int i = startingIndex; i < endingIndex; i++)
-                //{
-                //    if (i >= .Count)
-                //    {
-                //        break;
-                //    }
-                //    Albums.Add(r[i]);
-                //}
-
-                //foreach (Album aa in r)
-                //{
-                //    _albums.Add(aa);
-                //}
-                //_currentPage = 0;
             }
         }
 
+        #endregion
 
-        //private string _artistHeader;
-        //public string ArtistHeader
-        //{
-        //    get { return _artistHeader; }
-        //    set { SetProperty(ref _artistHeader, value); }
-        //}
-
-        //private string _albumHeader;
-        //public string AlbumHeader
-        //{
-        //    get { return _albumHeader; }
-        //    set { SetProperty(ref _albumHeader, value); }
-        //}
-
-        //private string _trackHeader;
-        //public string TrackHeader
-        //{
-        //    get { return _trackHeader; }
-        //    set { SetProperty(ref _trackHeader, value); }
-        //}
-        // for this code image needs to be a project resource
-        //private BitmapImage LoadImage(string filename)
-        //{
-        //    return new BitmapImage(new Uri("pack://application:,,,/" + filename));
-        //}
         public LibraryViewModel(IEnumerable<Song> songs)
         {
-            //ImageData = LoadImage(@"D:\My Music\Full Albums\ANCST\Summits of Despondency\cover.jpg");
             AddToQueueClick = new CommandHandler(() => AddToQueueAction(), () => true);
             ClearQueueClick = new CommandHandler(() => ClearQueueAction(), () => true);
             FirstPageClick = new CommandHandler(() => FirstPageAction(), () => true);
@@ -219,38 +120,15 @@ namespace MusicPlayer.ViewModels
             _itemsPerPage = 10;
             _currentPage = 0;
             _totalPages = 0;
-            // LoadingStatus = "Loading...";
-            IsLoading = true;
-
-            _allArtists = new List<Artist>();
             _allAlbums = new List<Album>();
-//            _filteredAlbums = new List<Album>();
-
-            _selectedArtist = new Artist();
             _selectedAlbum = new Album();
 
-            Refresh(songs);
-
-            //Task.Run(() =>
-            //{
-            //    Load(songs);
-            //    _filteredAlbums = new List<Album>(_allAlbums);
-            //    _totalPages = _allAlbums.Count / _itemsPerPage;
-            //    if (_allAlbums.Count % _itemsPerPage != 0)
-            //    {
-            //        _totalPages += 1;
-            //    }
-            //    LoadingStatus = "";
-            //    Application.Current.Dispatcher.Invoke(() =>
-            //    {
-            //        PageAlbums();
-            //    });
-            //});    
+            IsLoading = true;
+            Refresh(songs);   
         }
 
         public void Refresh(IEnumerable<Song> songs)
         {
-            // LoadingStatus = "Loading...";
             IsLoading = true;
             Task.Run(() =>
             {
@@ -270,21 +148,9 @@ namespace MusicPlayer.ViewModels
             });
         }
 
-        public void Load(IEnumerable<Song> songs)
+        private void Load(IEnumerable<Song> songs)
         {
-            _allArtists.Clear();
             _allAlbums.Clear();
-            IEnumerable<string> artistNames = songs.Select(s => s.Artist).Distinct();
-            artistNames = artistNames.OrderBy(s => s);
-            foreach (string s in artistNames)
-            {
-                var newArtist = new Artist() { Name = s };
-                var artistSongs = songs.Where(a => a.Artist == s);
-                var artistAlbums = artistSongs.Select(aa => new { title = aa.Album, year = aa.Year }).Distinct();
-                newArtist.AlbumCount = artistAlbums.Count();
-                newArtist.TrackCount = artistSongs.Count();
-                _allArtists.Add(newArtist);
-            }
 
             var albumNames = songs.Select(s => new { Title = s.Album, Year = s.Year }).Distinct();
             albumNames = albumNames.OrderByDescending(a => a.Year);
@@ -351,10 +217,6 @@ namespace MusicPlayer.ViewModels
             }
 
             _allAlbums = _allAlbums.OrderBy(a => a.DisplayArtist).ToList();
-
-          //  Albums = new ObservableCollection<Album>(_allAlbums);
-            _allArtists.Insert(0, new Artist { Name = "Show All (" + _allArtists.Count + ")", AlbumCount = Albums.Count, TrackCount = Albums.Sum(a => a.TotalTracks) });
-            Artists = new ObservableCollection<Artist>(_allArtists);
         }
 
         private static BitmapImage LoadImage(byte[] imageData)
@@ -378,13 +240,7 @@ namespace MusicPlayer.ViewModels
             return image;
         }
 
-        //private string _queueFilePath;
-        //public string QueueFilePath
-        //{
-        //    get { return _queueFilePath; }
-        //    set { SetProperty(ref _queueFilePath, value); }
-        //}
-
+        #region CommandActions
         private void AddToQueueAction()
         {
             AddToQueueRequested();
@@ -431,12 +287,11 @@ namespace MusicPlayer.ViewModels
             }
         }
 
+        #endregion
         private void PageAlbums()
         {
             Albums.Clear();
 
-           // _currentPage = 1;
-           // _itemsPerPage = 10;
             int startingIndex = _currentPage * _itemsPerPage;
             int endingIndex = (_currentPage + 1) * _itemsPerPage;
 

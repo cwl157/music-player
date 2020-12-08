@@ -24,7 +24,6 @@ namespace MusicPlayer.ViewModels
         private Timer _findSongEnd;
         private int _playingIndex;
         private readonly IMusicPlayer _player;
-       // private SongCollection _currentQueue;
         private double _seconds;
 
        // public ICommand AddToQueueCommand { get; private set; }

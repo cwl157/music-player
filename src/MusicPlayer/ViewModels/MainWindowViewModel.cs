@@ -27,7 +27,8 @@ namespace MusicPlayer.ViewModels
 
             PlayerViewModel = new PlayerViewModel(player);
             LibraryViewModel = new LibraryViewModel(_songs);
-            SettingsViewModel = new SettingsViewModel();
+            ILibraryLoader loader = new FileLibraryLoader();
+            SettingsViewModel = new SettingsViewModel(loader);
             LibraryViewModel.AddToQueueRequested += AddToPlayerQueue;
             LibraryViewModel.ClearQueueRequested += ClearPlayerQueue;
             SettingsViewModel.RefreshLibraryRequested += SettingsViewModel_RefreshLibraryRequested;
@@ -64,30 +65,8 @@ namespace MusicPlayer.ViewModels
 
         private void AddToPlayerQueue()
         {
-            //List<Song> songsToQueue = new List<Song>();
-            if (LibraryViewModel.SelectedAlbum == null || string.IsNullOrEmpty(LibraryViewModel.SelectedAlbum.Title))
-            {
-                IEnumerable<Song> songsToQueue = _songs.Where(s => s.Artist == LibraryViewModel.SelectedArtist.Name);
-                PlayerViewModel.AddToQueue(songsToQueue);
-            }
-            else
-            {
-                IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString());
-                PlayerViewModel.AddToQueue(songsToQueue);
-            }
-           // IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString());
-            //if (LibraryViewModel.SelectedAlbum == null)
-            //{
-            //    foreach (Album a in LibraryViewModel.SelectedArtist.Albums)
-            //    {
-            //        songsToQueue = songsToQueue.Concat(a.Songs).ToList();
-            //    }
-            //}
-            //else
-            //{
-            //    songsToQueue = LibraryViewModel.SelectedAlbum.Songs.ToList();
-            //}
-            
+            IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString());
+            PlayerViewModel.AddToQueue(songsToQueue);
         }
 
         private void ClearPlayerQueue()

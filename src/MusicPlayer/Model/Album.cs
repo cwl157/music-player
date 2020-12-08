@@ -17,7 +17,6 @@ namespace MusicPlayer.Model
         public string DisplayInfo { get { return "Tracks: " + TotalTracks + " Duration: " + Duration; } }
         public BitmapImage AlbumArt { get; set; }
 
-      //  public ObservableCollection<Song> Songs { get; set; }
         public List<string> ArtistNames { get; set; }
         public string DisplayArtist { get; set; }
     }

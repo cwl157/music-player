@@ -19,7 +19,6 @@ namespace MusicPlayer
     /// </summary>
     public partial class MainWindow : Window, IMusicPlayer
     {
-       // protected MediaElement Player { get; set; }
         public MainWindow()
         {
             InitializeComponent();

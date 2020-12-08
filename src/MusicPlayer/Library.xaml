@@ -23,7 +23,7 @@
             </RowDefinition>
         </Grid.RowDefinitions>
         <!--<Label Grid.Row="0" Grid.Column="0" Content="Artist Search: " HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"/> -->
-        <TextBox HorizontalAlignment="Left" Margin="5,0,0,0" Text="{Binding ArtistSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged" TextWrapping="Wrap" VerticalAlignment="Top" Width="200"/>
+        <TextBox HorizontalAlignment="Left" Margin="5,0,0,0" Text="{Binding ArtistSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="200"/>
         <Button Grid.Column="0" Content="Add to Queue" Command="{Binding AddToQueueClick}" HorizontalAlignment="Left" Margin="215,0,0,0" VerticalAlignment="Top"/>
         <Button Grid.Row="0" Grid.Column="0" Content="Clear Queue" Command="{Binding ClearQueueClick}" HorizontalAlignment="Left" Margin="300,0,0,0" VerticalAlignment="Top" Width="75"/>
         <Button Grid.Row="0" Grid.Column="0" Content="&lt;&lt;" Command="{Binding FirstPageClick}" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Bottom" Width="50"/>

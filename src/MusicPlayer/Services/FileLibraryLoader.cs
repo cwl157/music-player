@@ -9,13 +9,13 @@ using System.Windows.Media.Imaging;
 
 namespace MusicPlayer.Services
 {
-    public class FileQueueLoader : IQueueLoader
+    public class FileLibraryLoader : ILibraryLoader
     {
-        public FileQueueLoader()
+        public FileLibraryLoader()
         {
         }
 
-        public void WalkDirectoryTree(System.IO.DirectoryInfo root, List<Song> result)
+        public void Load(System.IO.DirectoryInfo root, List<Song> result)
         {
             System.IO.FileInfo[] files = null;
             System.IO.DirectoryInfo[] subDirs = null;
@@ -80,59 +80,59 @@ namespace MusicPlayer.Services
                     foreach (System.IO.DirectoryInfo dirInfo in subDirs)
                     {
                         // Resursive call for each subdirectory.
-                        WalkDirectoryTree(dirInfo, result);
+                        Load(dirInfo, result);
                     }
                 }
             }
         }
 
-        public List<Song> Load(string filepath)
-        {
-            DirectoryInfo dir = new DirectoryInfo(filepath);
-            List<Song> songs = new List<Song>();
-            foreach (FileInfo f in dir.GetFiles())
-            {
-                if (f.Extension.ToLower() == ".mp3")
-                {
-                    var tfile = TagLib.File.Create(f.FullName);
-                    Song s = new Song();
-                    s.Artist = tfile.Tag.FirstPerformer;
-                    s.Album = tfile.Tag.Album;
-                    s.Title = tfile.Tag.Title;
-                    s.TrackNumber = (int)tfile.Tag.Track;
-                    s.Duration = tfile.Properties.Duration;
-                    s.FilePath = f.FullName;
-                    s.Lyrics = tfile.Tag.Lyrics;
-                    //if (tfile.Tag.Pictures.Length > 0)
-                    //{
-                    //    s.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
-                    //}
-                    s.Year = tfile.Tag.Year.ToString();
-                    songs.Add(s);
-                }
-            }
+        //public List<Song> Load(string filepath)
+        //{
+        //    DirectoryInfo dir = new DirectoryInfo(filepath);
+        //    List<Song> songs = new List<Song>();
+        //    foreach (FileInfo f in dir.GetFiles())
+        //    {
+        //        if (f.Extension.ToLower() == ".mp3")
+        //        {
+        //            var tfile = TagLib.File.Create(f.FullName);
+        //            Song s = new Song();
+        //            s.Artist = tfile.Tag.FirstPerformer;
+        //            s.Album = tfile.Tag.Album;
+        //            s.Title = tfile.Tag.Title;
+        //            s.TrackNumber = (int)tfile.Tag.Track;
+        //            s.Duration = tfile.Properties.Duration;
+        //            s.FilePath = f.FullName;
+        //            s.Lyrics = tfile.Tag.Lyrics;
+        //            //if (tfile.Tag.Pictures.Length > 0)
+        //            //{
+        //            //    s.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+        //            //}
+        //            s.Year = tfile.Tag.Year.ToString();
+        //            songs.Add(s);
+        //        }
+        //    }
 
-            songs = songs.OrderBy(s => s.TrackNumber).ToList();
+        //    songs = songs.OrderBy(s => s.TrackNumber).ToList();
 
-            return songs;
-        }
+        //    return songs;
+        //}
 
-        private static BitmapImage LoadImage(byte[] imageData)
-        {
-            if (imageData == null || imageData.Length == 0) return null;
-            var image = new BitmapImage();
-            using (var mem = new MemoryStream(imageData))
-            {
-                mem.Position = 0;
-                image.BeginInit();
-                image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-                image.CacheOption = BitmapCacheOption.OnLoad;
-                image.UriSource = null;
-                image.StreamSource = mem;
-                image.EndInit();
-            }
-            image.Freeze();
-            return image;
-        }
+        //private static BitmapImage LoadImage(byte[] imageData)
+        //{
+        //    if (imageData == null || imageData.Length == 0) return null;
+        //    var image = new BitmapImage();
+        //    using (var mem = new MemoryStream(imageData))
+        //    {
+        //        mem.Position = 0;
+        //        image.BeginInit();
+        //        image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+        //        image.CacheOption = BitmapCacheOption.OnLoad;
+        //        image.UriSource = null;
+        //        image.StreamSource = mem;
+        //        image.EndInit();
+        //    }
+        //    image.Freeze();
+        //    return image;
+        //}
     }
 }
