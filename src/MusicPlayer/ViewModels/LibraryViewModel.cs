@@ -23,6 +23,7 @@ namespace MusicPlayer.ViewModels
         private int _itemsPerPage;
         private int _currentPage;
         private int _totalPages;
+        private IEnumerable<Song> _songs;
 
         public ICommand AddToQueueClick { get; private set; }
         public ICommand ClearQueueClick { get; private set; }
@@ -58,7 +59,34 @@ namespace MusicPlayer.ViewModels
         public int SelectedIndex { get { return _selectedIndex; } set { SetProperty(ref _selectedIndex, value); } }
 
         private Album _selectedAlbum;
-        public Album SelectedAlbum { get { return _selectedAlbum; } set { SetProperty(ref _selectedAlbum, value); } }
+        public Album SelectedAlbum
+        {
+            get { return _selectedAlbum; }
+            set
+            {
+                SetProperty(ref _selectedAlbum, value);
+                if (SelectedAlbum != null)
+                {
+                    SelectedAlbumSongList = new ObservableCollection<Song>(_songs.Where(s => s.Album == SelectedAlbum.Title && s.Year == SelectedAlbum.Year.ToString()));
+                }
+            }
+        }
+
+        private Song _selectedAlbumSelectedSong;
+
+        public Song SelectedAlbumSelectedSong
+        {
+            get { return _selectedAlbumSelectedSong; }
+            set { SetProperty(ref _selectedAlbumSelectedSong, value); }
+        }
+
+        private ObservableCollection<Song> _selectedAlbumSongList;
+
+        public ObservableCollection<Song> SelectedAlbumSongList
+        {
+            get { return _selectedAlbumSongList; }
+            set { SetProperty(ref _selectedAlbumSongList, value); }
+        }
 
         private string _pageText;
         public string PageText
@@ -105,7 +133,23 @@ namespace MusicPlayer.ViewModels
             if (!string.IsNullOrEmpty(_selectedYear) && !string.IsNullOrEmpty(_artistSearchText))
             {
                 string searchQuery = _artistSearchText.ToLower();
-                r = _allAlbums.Where(a => a.DisplayArtist.ToLower().Contains(searchQuery) || a.Title.ToLower().Contains(searchQuery)).Where(a => a.Year == int.Parse(_selectedYear)).ToList();
+                foreach (Album a in _allAlbums)
+                {
+                    if (a.Title.ToLower().Contains(searchQuery) && a.Year == int.Parse(_selectedYear) && !r.Contains(a))
+                    {
+                        r.Add(a);
+                    }
+                    else
+                    {
+                        foreach (string aa in a.ArtistNames)
+                        {
+                            if (aa.ToLower().Contains(searchQuery) && a.Year == int.Parse(_selectedYear) && !r.Contains(a))
+                            {
+                                r.Add(a);
+                            }
+                        }
+                    }
+                }
             }
             else if (!string.IsNullOrEmpty(_selectedYear) && string.IsNullOrEmpty(_artistSearchText))
             {
@@ -114,7 +158,23 @@ namespace MusicPlayer.ViewModels
             else if (string.IsNullOrEmpty(_selectedYear) && !string.IsNullOrEmpty(_artistSearchText))
             {
                 string searchQuery = _artistSearchText.ToLower();
-                r = _allAlbums.Where(a => a.DisplayArtist.ToLower().Contains(searchQuery) || a.Title.ToLower().Contains(searchQuery)).ToList();
+                foreach (Album a in _allAlbums)
+                {
+                    if (a.Title.ToLower().Contains(searchQuery) && !r.Contains(a))
+                    {
+                        r.Add(a);
+                    }
+                    else
+                    {
+                        foreach (string aa in a.ArtistNames)
+                        {
+                            if (aa.ToLower().Contains(searchQuery) && !r.Contains(a))
+                            {
+                                r.Add(a);
+                            }
+                        }
+                    }
+                }
             }
             else if (string.IsNullOrEmpty(_selectedYear) && string.IsNullOrEmpty(_artistSearchText))
             {
@@ -143,6 +203,7 @@ namespace MusicPlayer.ViewModels
 
         public LibraryViewModel(IEnumerable<Song> songs)
         {
+            _songs = songs;
             AddToQueueClick = new CommandHandler(() => AddToQueueAction(), () => true);
             ClearQueueClick = new CommandHandler(() => ClearQueueAction(), () => true);
             FirstPageClick = new CommandHandler(() => FirstPageAction(), () => true);

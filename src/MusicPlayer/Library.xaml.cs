@@ -23,5 +23,12 @@ namespace MusicPlayer
         {
             InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //SongListWindow w = new SongListWindow();
+           // w.Show();
+
+        }
     }
 }

@@ -9,17 +9,20 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*">
+            <ColumnDefinition Width="2*">
 
             </ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
             <!--<ColumnDefinition Width="1*"></ColumnDefinition>-->
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*">
+            <RowDefinition Height="2*">
 
             </RowDefinition>
             <RowDefinition Height="10*">
 
+            </RowDefinition>
+            <RowDefinition Height="8*">
             </RowDefinition>
         </Grid.RowDefinitions>
         <!--<Label Grid.Row="0" Grid.Column="0" Content="Artist Search: " HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"/> -->
@@ -33,7 +36,7 @@
         <Button Grid.Row="0" Grid.Column="0" Content="&gt;" Command="{Binding NextPageClick}" HorizontalAlignment="Left" Margin="213,0,0,0" VerticalAlignment="Bottom" Width="50"/>
         <Button Grid.Row="0" Grid.Column="0" Content="&gt;&gt;" Command="{Binding LastPageClick}" HorizontalAlignment="Left" Margin="268,0,0,0" VerticalAlignment="Bottom" Width="50"/>
 
-        <ListView Visibility="Visible" x:Name="TvBox"  ItemsSource="{Binding Albums}"  SelectedItem="{Binding SelectedAlbum}" Grid.Column="0" Grid.Row="1"  VerticalAlignment="Top">
+        <ListView Visibility="Visible" x:Name="TvBox"  ItemsSource="{Binding Albums}"  SelectedItem="{Binding SelectedAlbum}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"  VerticalAlignment="Top">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid Columns="5" />
@@ -50,24 +53,23 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-
-        <ListView Visibility="Hidden" ItemsSource="{Binding Albums}"  SelectedItem="{Binding SelectedAlbum}" Grid.Column="1" Grid.Row="1" SelectionMode="Single">
+        <ListView x:Name="SelectedAlbumView" Margin="5,5,0,0" Grid.Column="0" Grid.Row="2" ItemsSource="{Binding SelectedAlbumSongList}" SelectedItem="{Binding SelectedAlbumSelectedSong}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Album" Width="180"  DisplayMemberBinding="{Binding Title}" />
-                    <GridViewColumn Header="Year" Width="60" DisplayMemberBinding="{Binding Year}" />
-                    <GridViewColumn Header="Tracks" Width="40" DisplayMemberBinding="{Binding TotalTracks}" />
-                    <GridViewColumn Header="Duration" Width="70" DisplayMemberBinding="{Binding Duration}" />
+                    <GridViewColumn Header="Track" Width="50" DisplayMemberBinding="{Binding TrackNumber}" />
+                    <GridViewColumn Header="Title" Width="350" DisplayMemberBinding="{Binding Title}" />
+                    <GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding DisplayDuration}" />
                 </GridView>
             </ListView.View>
         </ListView>
-
-
+        <ScrollViewer Grid.Row="2" Margin="0,0,0,0" Grid.Column="1">
+            <TextBlock Grid.Column="1" Grid.Row="0" x:Name="LyricsTxtBlock" TextWrapping="Wrap" Text="{Binding SelectedAlbumSelectedSong.Lyrics}" Height="auto"/>
+        </ScrollViewer>
+        
         <Rectangle Fill="White" Grid.ColumnSpan="2" Grid.RowSpan="2" Opacity="0.7" Visibility="{Binding IsLoading, 
         Converter={StaticResource BoolToVis}}" />
         <Label Content="Loading..." Grid.ColumnSpan="2" Grid.Row="2" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Visibility="{Binding IsLoading, 
         Converter={StaticResource BoolToVis}}" />
-       
     </Grid>
     
 </UserControl>

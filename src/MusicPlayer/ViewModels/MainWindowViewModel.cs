@@ -31,6 +31,7 @@ namespace MusicPlayer.ViewModels
             SettingsViewModel = new SettingsViewModel(loader);
             LibraryViewModel.AddToQueueRequested += AddToPlayerQueue;
             LibraryViewModel.ClearQueueRequested += ClearPlayerQueue;
+           // LibraryViewModel.SelectAlbumRequested += ShowSelectedAlbumSongList;
             SettingsViewModel.RefreshLibraryRequested += SettingsViewModel_RefreshLibraryRequested;
         }
 
@@ -73,5 +74,10 @@ namespace MusicPlayer.ViewModels
         {
             PlayerViewModel.ClearQueueCommand.Execute(null);
         }
+
+        //private void ShowSelectedAlbumSongList()
+        //{
+        //    SongListViewModel.SongList = new ObservableCollection<Song>(_songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString()));
+        //}
     }
 }
