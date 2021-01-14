@@ -25,6 +25,9 @@ namespace MusicPlayer.ViewModels
         private int _playingIndex;
         private readonly IMusicPlayer _player;
         private double _seconds;
+        // TODO: Set _defaultSong to all default values
+        // When stop: Set PlayingSong to default song to trigger updates to view
+        private Song _defaultSong;
 
        // public ICommand AddToQueueCommand { get; private set; }
         public ICommand ClearQueueCommand { get; private set; }
@@ -40,7 +43,7 @@ namespace MusicPlayer.ViewModels
                 new System.Windows.DependencyObject())) return;
 
             _seconds = 0;
-
+            _defaultSong = new Song();
             _playingSong = new Song();
             QueueInfo = "";
             _player = m;
@@ -183,8 +186,8 @@ namespace MusicPlayer.ViewModels
 
         public void AddToQueue(IEnumerable<Song> songs)
         {
-           // StopSongAction();
-           // ClearQueueAction();
+            StopSongAction();
+            ClearQueueAction();
             songs = songs.OrderByDescending(s=>s.Year).ThenBy(s => s.Album).ThenBy(s => s.TrackNumber);
             foreach (Song s in songs)
             {
@@ -204,7 +207,7 @@ namespace MusicPlayer.ViewModels
             }
             SelectedIndex = 0;
             SelectedSong = SongList[0];
-           // PlaySongAction();
+            PlaySongAction();
         }
 
         #region CommandActions
@@ -227,39 +230,57 @@ namespace MusicPlayer.ViewModels
 
         private void ClearQueueAction()
         {
+            StopSongAction();
+            PlayingSong = _defaultSong;
+            //PlayingSong.Lyrics = "";
+            //PlayingSong.Duration = TimeSpan.Zero;
+            //PlayingSong.Title = "";
+            //PlayingSong.Album = "";
+            //PlayingSong.Artist = "";
+            //PlayingSong.FilePath = "";
+            //PlayingSong.TrackNumber = 0;
+            //PlayingSong.Year = "0";
+            // PlayingSong = null;
+            ElapsedTime = "00:00 / 00:00";
+            SelectedAlbumArt = null;
             SongList.Clear();
+            ArtistAlbumInfo = "";
+            TrackTitleInfo = "";
             QueueInfo = "";
         }
 
         private void PlaySongAction()
         {
-            if (PlayingSong.FilePath != SelectedSong.FilePath)
+            if (SelectedSong != null)
             {
-                StopSongAction();
-                PlayingSong = SelectedSong;
-                Task.Run(() =>
+                if (PlayingSong.FilePath != SelectedSong.FilePath)
                 {
-                    var tfile = TagLib.File.Create(PlayingSong.FilePath);
-                    if (tfile.Tag.Pictures.Length > 0)
+                    StopSongAction();
+                    PlayingSong = SelectedSong;
+                    Task.Run(() =>
                     {
-                        SelectedAlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
-                    }
-                    else
-                    {
-                        SelectedAlbumArt = null;
-                    }
-                });
+                        var tfile = TagLib.File.Create(PlayingSong.FilePath);
+                        if (tfile.Tag.Pictures.Length > 0)
+                        {
+                            SelectedAlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+                        }
+                        else
+                        {
+                            SelectedAlbumArt = null;
+                        }
+                    });
 
-                _playingIndex = SelectedIndex;
-                ArtistAlbumInfo = PlayingSong.Artist + " - " + PlayingSong.Album + " [" + PlayingSong.Year + "]";
-                TrackTitleInfo = PlayingSong.TrackNumber + ". " + PlayingSong.Title;
-                _player.Play(new Uri(PlayingSong.FilePath));
+                    _playingIndex = SelectedIndex;
+                    ArtistAlbumInfo = PlayingSong.Artist + " - " + PlayingSong.Album + " [" + PlayingSong.Year + "]";
+                    TrackTitleInfo = PlayingSong.TrackNumber + ". " + PlayingSong.Title;
+                    _player.Play(new Uri(PlayingSong.FilePath));
+                }
+                else
+                {
+                    _player.Play();
+                }
+                StartTimers();
             }
-            else
-            {
-                _player.Play();
-            }
-            StartTimers();
         }
 
         private static BitmapImage LoadImage(byte[] imageData)

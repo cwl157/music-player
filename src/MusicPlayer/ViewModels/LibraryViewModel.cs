@@ -203,7 +203,7 @@ namespace MusicPlayer.ViewModels
 
         public LibraryViewModel(IEnumerable<Song> songs)
         {
-            _songs = songs;
+           
             AddToQueueClick = new CommandHandler(() => AddToQueueAction(), () => true);
             ClearQueueClick = new CommandHandler(() => ClearQueueAction(), () => true);
             FirstPageClick = new CommandHandler(() => FirstPageAction(), () => true);
@@ -227,6 +227,7 @@ namespace MusicPlayer.ViewModels
             IsLoading = true;
             Task.Run(() =>
             {
+                _songs = songs;
                 Load(songs);
                 var years = _allAlbums.Select(a => a.Year).Distinct().OrderByDescending(y => y);
                 _albumYears.Clear();

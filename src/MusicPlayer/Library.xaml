@@ -27,8 +27,8 @@
         </Grid.RowDefinitions>
         <!--<Label Grid.Row="0" Grid.Column="0" Content="Artist Search: " HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"/> -->
         <TextBox HorizontalAlignment="Left" Margin="5,0,0,0" Text="{Binding ArtistSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Top" Width="200"/>
-        <Button Grid.Column="0" Content="Add to Queue" Command="{Binding AddToQueueClick}" HorizontalAlignment="Left" Margin="215,0,0,0" VerticalAlignment="Top"/>
-        <Button Grid.Row="0" Grid.Column="0" Content="Clear Queue" Command="{Binding ClearQueueClick}" HorizontalAlignment="Left" Margin="300,0,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Grid.Column="0" Content="Play Album" Command="{Binding AddToQueueClick}" HorizontalAlignment="Left" Margin="215,0,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Grid.Row="0" Grid.Column="0" Content="Eject Album" Command="{Binding ClearQueueClick}" HorizontalAlignment="Left" Margin="300,0,0,0" VerticalAlignment="Top" Width="75"/>
         <ComboBox HorizontalAlignment="Left" Margin="400,0,0,0" ItemsSource="{Binding AlbumYears}" SelectedItem="{Binding SelectedYear}" VerticalAlignment="Top" Width="100"/>
         <Button Grid.Row="0" Grid.Column="0" Content="&lt;&lt;" Command="{Binding FirstPageClick}" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Bottom" Width="50"/>
         <Button Grid.Row="0" Grid.Column="0" Content="&lt;" Command="{Binding PreviousPageClick}" HorizontalAlignment="Left" Margin="60,0,0,0" VerticalAlignment="Bottom" Width="50"/>
