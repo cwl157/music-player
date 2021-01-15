@@ -21,15 +21,12 @@ namespace MusicPlayer.ViewModels
     public class PlayerViewModel : BindableBase
     {
         private Timer _incrementPlayingProgress;
-        private Timer _findSongEnd;
+       // private Timer _findSongEnd;
         private int _playingIndex;
         private readonly IMusicPlayer _player;
         private double _seconds;
-        // TODO: Set _defaultSong to all default values
-        // When stop: Set PlayingSong to default song to trigger updates to view
         private Song _defaultSong;
 
-       // public ICommand AddToQueueCommand { get; private set; }
         public ICommand ClearQueueCommand { get; private set; }
         public ICommand PlaySong { get; private set; }
         public ICommand PauseSong { get; private set; }
@@ -60,28 +57,28 @@ namespace MusicPlayer.ViewModels
                 string displayProgress = TimeSpan.FromMilliseconds(_seconds).ToString("mm\\:ss");
                 ElapsedTime = displayProgress + " / " + PlayingSong.DisplayDuration;
             };
-            _findSongEnd = new Timer();
-            _findSongEnd.Interval = 1;
-            _findSongEnd.Elapsed += (sender, e) =>
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    if (_player.IsDone())
-                    {
-                        Debug.WriteLine("Done");
-                        if (++_playingIndex < SongList.Count)
-                        {
+            //_findSongEnd = new Timer();
+            //_findSongEnd.Interval = 1;
+            //_findSongEnd.Elapsed += (sender, e) =>
+            //{
+            //    Application.Current.Dispatcher.Invoke(() =>
+            //    {
+            //        if (_player.IsDone())
+            //        {
+            //            Debug.WriteLine("Done");
+            //            if (++_playingIndex < SongList.Count)
+            //            {
 
-                            SelectedSong = SongList[_playingIndex];
-                            PlaySongAction();
-                        }
-                        else
-                        {
-                            StopSongAction();
-                        }
-                    }
-                });
-            };
+            //                SelectedSong = SongList[_playingIndex];
+            //                PlaySongAction();
+            //            }
+            //            else
+            //            {
+            //                StopSongAction();
+            //            }
+            //        }
+            //    });
+            //};
 
             //AddToQueueCommand = new CommandHandler(() => AddToQueueAction(), () => true);
             ClearQueueCommand = new CommandHandler(() => ClearQueueAction(), () => true);
@@ -354,14 +351,34 @@ namespace MusicPlayer.ViewModels
         private void StopTimers()
         {
             _incrementPlayingProgress.Stop();
-            _findSongEnd.Stop();
+           // _findSongEnd.Stop();
         }
 
         private void StartTimers()
         {
             _incrementPlayingProgress.Start();
-            _findSongEnd.Start();
+           // _findSongEnd.Start();
         }
         #endregion
+
+        public void MediaEndedAction()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+              //  if (_player.IsDone())
+              //  {
+                    if (++_playingIndex < SongList.Count)
+                    {
+
+                        SelectedSong = SongList[_playingIndex];
+                        PlaySongAction();
+                    }
+                    else
+                    {
+                        StopSongAction();
+                    }
+               // }
+            });
+        }
     }
 }

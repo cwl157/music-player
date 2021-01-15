@@ -36,6 +36,6 @@
                 <ContentControl Content="{Binding SettingsViewModel}" />
             </TabItem>
         </TabControl>
-        <MediaElement x:Name="SongPlayer" Height="100" Width="100"/>
+        <MediaElement x:Name="SongPlayer" Height="100" Width="100" MediaEnded="SongPlayer_MediaEnded"/>
     </Grid>
 </Window>

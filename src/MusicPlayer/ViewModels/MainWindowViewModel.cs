@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,7 @@ namespace MusicPlayer.ViewModels
         public LibraryViewModel LibraryViewModel { get; private set; }
         public SettingsViewModel SettingsViewModel { get; private set; }
         private List<Song> _songs;
+        public event Action MediaEndedRequested = delegate { };
 
         public MainWindowViewModel(IMusicPlayer player)
         {
@@ -33,6 +35,12 @@ namespace MusicPlayer.ViewModels
             LibraryViewModel.ClearQueueRequested += ClearPlayerQueue;
            // LibraryViewModel.SelectAlbumRequested += ShowSelectedAlbumSongList;
             SettingsViewModel.RefreshLibraryRequested += SettingsViewModel_RefreshLibraryRequested;
+            //MediaEndedRequested += MainWindowViewModel_MediaEndedRequested;
+        }
+
+        public void MediaEnded()
+        {
+            PlayerViewModel.MediaEndedAction();
         }
 
         private void LoadSongs()

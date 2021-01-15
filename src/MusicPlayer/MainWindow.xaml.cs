@@ -19,15 +19,23 @@ namespace MusicPlayer
     /// </summary>
     public partial class MainWindow : Window, IMusicPlayer
     {
+        private MainWindowViewModel _mainWindowvm;
         public MainWindow()
         {
             InitializeComponent();
             SongPlayer.LoadedBehavior = MediaState.Manual;
-            DataContext = new MainWindowViewModel(this);
+            _mainWindowvm = new MainWindowViewModel(this);
+            DataContext = _mainWindowvm;
             
         }
 
+        private void SongPlayer_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            _mainWindowvm.MediaEnded();
+        }
+
         #region IMusicPlayer
+
         public void Play(Uri filePath)
         {
             SongPlayer.Source = filePath;
