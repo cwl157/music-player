@@ -47,11 +47,6 @@
             <TextBlock Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" x:Name="LyricsTxtBlock" TextWrapping="Wrap" Text="{Binding PlayingSong.Lyrics}" Height="auto"/>
         </ScrollViewer>
         <Image x:Name="AlbumArtImg" Source="{Binding SelectedAlbumArt}" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" Height="auto" Margin="0,0,0,0" VerticalAlignment="Top" Width="256" />
-        <Button x:Name="ClearQueueBtn" Command="{Binding ClearQueueCommand}" Content="Clear Queue" Grid.Column="2" HorizontalAlignment="Left" Margin="619,11,0,0" VerticalAlignment="Top" Width="96" />
-
-
-
-
 
     </Grid>
 </UserControl>
