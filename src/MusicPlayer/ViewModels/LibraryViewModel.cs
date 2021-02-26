@@ -67,7 +67,14 @@ namespace MusicPlayer.ViewModels
                 SetProperty(ref _selectedAlbum, value);
                 if (SelectedAlbum != null)
                 {
-                    SelectedAlbumSongList = new ObservableCollection<Song>(_songs.Where(s => s.Album == SelectedAlbum.Title && s.Year == SelectedAlbum.Year.ToString()));
+                    if (SelectedAlbum.ArtistNames.Count == 1)
+                    {
+                        SelectedAlbumSongList = new ObservableCollection<Song>(_songs.Where(s => s.Album == SelectedAlbum.Title && s.Year == SelectedAlbum.Year.ToString() && s.Artist == SelectedAlbum.DisplayArtist));
+                    }
+                    else
+                    {
+                        SelectedAlbumSongList = new ObservableCollection<Song>(_songs.Where(s => s.Album == SelectedAlbum.Title && s.Year == SelectedAlbum.Year.ToString()));
+                    }
                 }
             }
         }
@@ -257,11 +264,28 @@ namespace MusicPlayer.ViewModels
         {
             _allAlbums.Clear();
 
-            var albumNames = songs.Select(s => new { Title = s.Album, Year = s.Year }).Distinct();
+            // Distinct should be only by album, year and artist with comment added
+            var albumNames = songs.Select(s => new { Title = s.Album, Year = s.Year, Artist = s.Artist, Comment = s.Comment }).Distinct();
+
             albumNames = albumNames.OrderByDescending(a => a.Year);
             foreach (var name in albumNames)
             {
-                var ss = songs.Where(t => t.Album == name.Title && t.Year == name.Year);
+                if (name.Comment.ToLower().Contains("various"))
+                {
+                    var albumAdded = _allAlbums.FirstOrDefault(a => a.Title == name.Title && a.Year.ToString() == name.Year);
+                    if (albumAdded != null)
+                    {
+                        continue;
+                    }
+                }
+
+                var ss = songs.Where(t => t.Album == name.Title && t.Year == name.Year && t.Artist == name.Artist);
+                if (name.Comment.ToLower().Contains("various"))
+                {
+                    ss = songs.Where(t => t.Album == name.Title && t.Year == name.Year);
+                }
+
+                
                 var newAlbum = new Album();
                 newAlbum.Title = name.Title;
                 newAlbum.TotalTracks = ss.Count();

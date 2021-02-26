@@ -74,8 +74,18 @@ namespace MusicPlayer.ViewModels
 
         private void AddToPlayerQueue()
         {
-            IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString());
-            PlayerViewModel.AddToQueue(songsToQueue);
+            if (LibraryViewModel.SelectedAlbum.ArtistNames.Count == 1)
+            {
+                IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString() && s.Artist == LibraryViewModel.SelectedAlbum.DisplayArtist);
+                PlayerViewModel.AddToQueue(songsToQueue);
+            }
+            else
+            {
+                IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString());
+                PlayerViewModel.AddToQueue(songsToQueue);
+            }
+
+            //IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString());            
         }
 
         private void ClearPlayerQueue()

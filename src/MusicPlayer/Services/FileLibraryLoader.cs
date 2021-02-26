@@ -63,6 +63,19 @@ namespace MusicPlayer.Services
                             s.Duration = tfile.Properties.Duration;
                             s.FilePath = fi.FullName;
                             s.Lyrics = tfile.Tag.Lyrics;
+                            if (tfile.Tag.Comment == null)
+                            {
+                                s.Comment = "";
+                            }
+                            else if (tfile.Tag.Comment.ToLower().Contains("various"))
+                            {
+                                s.Comment = "various";
+                            }
+                            else
+                            {
+                                s.Comment = "";
+                            }
+                            //s.Comment = tfile.Tag.Comment ?? tfile.Tag.Comment.ToLower().Contains("various") ? "various : "";
                             //if (tfile.Tag.Pictures.Length > 0)
                             //{
                             //    s.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
