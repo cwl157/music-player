@@ -328,18 +328,18 @@ namespace MusicPlayer.ViewModels
                 var firstSong = ss.FirstOrDefault();
                 if (firstSong != null)
                 {
-                    try
-                    {
-                        var tfile = TagLib.File.Create(firstSong.FilePath);
-                        if (tfile.Tag.Pictures.Length > 0)
-                        {
-                            newAlbum.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        // TODO: error handling and logging
-                    }
+                    //try
+                    //{
+                    //    var tfile = TagLib.File.Create(firstSong.FilePath);
+                    //    if (tfile.Tag.Pictures.Length > 0)
+                    //    {
+                    //        newAlbum.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+                    //    }
+                    //}
+                    //catch (Exception e)
+                    //{
+                    //    // TODO: error handling and logging
+                    //}
                     newAlbum.DateAdded = firstSong.DateAdded;
                 }
                 int outYear = 0;
@@ -453,6 +453,17 @@ namespace MusicPlayer.ViewModels
             }
         }
 
+        /*
+         *  if (SelectedAlbum.ArtistNames.Count == 1)
+                    {
+                        SelectedAlbumSongList = new ObservableCollection<Song>(_songs.Where(s => s.Album == SelectedAlbum.Title && s.Year == SelectedAlbum.Year.ToString() && s.Artist == SelectedAlbum.DisplayArtist));
+                    }
+                    else
+                    {
+                        SelectedAlbumSongList = new ObservableCollection<Song>(_songs.Where(s => s.Album == SelectedAlbum.Title && s.Year == SelectedAlbum.Year.ToString()));
+                    }
+         */
+
         #endregion
         private void PageAlbums()
         {
@@ -467,6 +478,36 @@ namespace MusicPlayer.ViewModels
                 {
                     break;
                 }
+                Song firstSong = null;
+                
+                if (_filteredAlbums[i].ArtistNames.Count == 1)
+                {
+                    firstSong = _songs.FirstOrDefault(s => s.Album == _filteredAlbums[i].Title && s.Year == _filteredAlbums[i].Year.ToString() && s.Artist == _filteredAlbums[i].DisplayArtist);
+                }
+                else
+                {
+                    firstSong = _songs.FirstOrDefault(s => s.Album == _filteredAlbums[i].Title && s.Year == _filteredAlbums[i].Year.ToString());
+                }
+
+                if (_filteredAlbums[i].AlbumArt == null)
+                {
+                    if (firstSong != null)
+                    {
+                        try
+                        {
+                            var tfile = TagLib.File.Create(firstSong.FilePath);
+                            if (tfile.Tag.Pictures.Length > 0)
+                            {
+                                _filteredAlbums[i].AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            // TODO: error handling and logging
+                        }
+                    }
+                }
+
                 Albums.Add(_filteredAlbums[i]);
             }
 
