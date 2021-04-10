@@ -81,6 +81,7 @@ namespace MusicPlayer.Services
                             //    s.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
                             //}
                             s.Year = tfile.Tag.Year.ToString();
+                            s.DateAdded = fi.CreationTimeUtc;
                             result.Add(s);
                         }
                     }

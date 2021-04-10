@@ -132,6 +132,42 @@ namespace MusicPlayer.ViewModels
             }
         }
 
+        private bool _isViewRecent;
+        public bool IsViewRecent
+        {
+            get { return _isViewRecent; }
+            set
+            {
+                SetProperty(ref _isViewRecent, value);
+                List<Album> r = new List<Album>();
+                if (IsViewRecent)
+                {
+                    r = _allAlbums.Where(a => a.DateAdded >= DateTime.UtcNow.AddMonths(-3)).ToList();
+                }
+                else
+                {
+                    r = _allAlbums;
+                }
+
+                _filteredAlbums.Clear();
+                foreach (Album a in r)
+                {
+                    _filteredAlbums.Add(a);
+                }
+
+                _currentPage = 0;
+                _totalPages = 0;
+
+                _totalPages = r.Count / _itemsPerPage;
+                if (r.Count % _itemsPerPage != 0)
+                {
+                    _totalPages += 1;
+                }
+
+                PageAlbums();
+            }
+        }
+
 
         private void filter()
         {
@@ -304,6 +340,7 @@ namespace MusicPlayer.ViewModels
                     {
                         // TODO: error handling and logging
                     }
+                    newAlbum.DateAdded = firstSong.DateAdded;
                 }
                 int outYear = 0;
                 int.TryParse(ss.First().Year, out outYear);

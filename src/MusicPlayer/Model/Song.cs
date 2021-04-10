@@ -21,5 +21,7 @@ namespace MusicPlayer.Model
         public string Lyrics { get; set; }
         public string Year { get; set; } 
         public string Comment { get; set; }
+
+        public DateTime DateAdded { get; set; }
     }
 }

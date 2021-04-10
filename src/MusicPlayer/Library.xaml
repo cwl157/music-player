@@ -30,6 +30,7 @@
         <Button Grid.Column="0" Content="Play Album" Command="{Binding AddToQueueClick}" HorizontalAlignment="Left" Margin="215,0,0,0" VerticalAlignment="Top" Width="75"/>
         <Button Grid.Row="0" Grid.Column="0" Content="Eject Album" Command="{Binding ClearQueueClick}" HorizontalAlignment="Left" Margin="300,0,0,0" VerticalAlignment="Top" Width="75"/>
         <ComboBox HorizontalAlignment="Left" Margin="400,0,0,0" ItemsSource="{Binding AlbumYears}" SelectedItem="{Binding SelectedYear}" VerticalAlignment="Top" Width="100"/>
+        <CheckBox Content="View Recent Additions" IsChecked="{Binding IsViewRecent}" HorizontalAlignment="Left" Margin="400,0,0,0" Grid.Row="0" VerticalAlignment="Center"/>
         <Button Grid.Row="0" Grid.Column="0" Content="&lt;&lt;" Command="{Binding FirstPageClick}" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Bottom" Width="50"/>
         <Button Grid.Row="0" Grid.Column="0" Content="&lt;" Command="{Binding PreviousPageClick}" HorizontalAlignment="Left" Margin="60,0,0,0" VerticalAlignment="Bottom" Width="50"/>
         <Label Content="{Binding PageText}" HorizontalAlignment="Left" Margin="111,0,0,0" VerticalAlignment="Bottom"/>

@@ -19,5 +19,6 @@ namespace MusicPlayer.Model
 
         public List<string> ArtistNames { get; set; }
         public string DisplayArtist { get; set; }
+        public DateTime DateAdded { get; set; }
     }
 }
