@@ -10,7 +10,7 @@ namespace MusicPlayer.Tests
 {
     internal class LibraryLoaderStub : ILibraryLoader
     {
-        public void Load(DirectoryInfo root, List<Song> result)
+        public void Load(DirectoryInfo root, List<Song> result, DateTime lastSyncTime)
         {
            // var tmp = new List<Song>();
             result.Add(new Song()

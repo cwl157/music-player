@@ -143,6 +143,7 @@ namespace MusicPlayer.ViewModels
                 if (IsViewRecent)
                 {
                     r = _allAlbums.Where(a => a.DateAdded >= DateTime.UtcNow.AddMonths(-3)).ToList();
+                    r = r.OrderByDescending(a => a.DateAdded).ToList<Album>();
                 }
                 else
                 {

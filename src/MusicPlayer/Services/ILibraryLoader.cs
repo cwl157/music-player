@@ -8,6 +8,6 @@ namespace MusicPlayer.Services
     public interface ILibraryLoader
     {
         //List<Song> Load(string path);
-        void Load(System.IO.DirectoryInfo root, List<Song> result);
+        void Load(System.IO.DirectoryInfo root, List<Song> result, DateTime lastSyncTime);
     }
 }

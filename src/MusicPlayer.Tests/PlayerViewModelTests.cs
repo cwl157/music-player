@@ -2,6 +2,7 @@ using MusicPlayer.Model;
 using MusicPlayer.Services;
 using MusicPlayer.ViewModels;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Intrinsics.X86;
 using System.Threading;
@@ -29,7 +30,7 @@ namespace MusicPlayer.Tests
             PlayerViewModel vm = new PlayerViewModel(mp);
 
             List<Song> songs = new List<Song>();
-            ql.Load(null, songs);
+            ql.Load(null, songs, DateTime.Now.AddDays(-1));
             vm.AddToQueue(songs);
             Assert.AreEqual(2, vm.SongList.Count);
             Assert.AreEqual("2 songs - 00:30", vm.QueueInfo);
@@ -44,7 +45,7 @@ namespace MusicPlayer.Tests
             PlayerViewModel vm = new PlayerViewModel(mp);
 
             List<Song> songs = new List<Song>();
-            ql.Load(null, songs);
+            ql.Load(null, songs, DateTime.Now.AddDays(-1));
             vm.AddToQueue(songs);
             vm.ClearQueueCommand.Execute(null);
             Assert.AreEqual(0, vm.SongList.Count);
@@ -60,7 +61,7 @@ namespace MusicPlayer.Tests
             PlayerViewModel vm = new PlayerViewModel(mp);
 
             List<Song> songs = new List<Song>();
-            ql.Load(null, songs);
+            ql.Load(null, songs, DateTime.Now.AddDays(-1));
             vm.AddToQueue(songs);
 
             vm.SelectedIndex = 0;

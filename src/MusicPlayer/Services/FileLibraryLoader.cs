@@ -15,7 +15,7 @@ namespace MusicPlayer.Services
         {
         }
 
-        public void Load(System.IO.DirectoryInfo root, List<Song> result)
+        public void Load(System.IO.DirectoryInfo root, List<Song> result, DateTime lastSyncTime)
         {
             System.IO.FileInfo[] files = null;
             System.IO.DirectoryInfo[] subDirs = null;
@@ -47,13 +47,14 @@ namespace MusicPlayer.Services
                 {
                     foreach (System.IO.FileInfo fi in files)
                     {
+                        //var x = new TagLib.Id3v2.Tag()
                         // In this example, we only access the existing FileInfo object. If we
                         // want to open, delete or modify the file, then
                         // a try-catch block is required here to handle the case
                         // where the file has been deleted since the call to TraverseTree().
                         if (fi.Extension.ToLower() == ".mp3")
                         {
-                           // Debug.WriteLine(fi.FullName);
+
                             var tfile = TagLib.File.Create(fi.FullName);
                             Song s = new Song();
                             s.Artist = tfile.Tag.FirstPerformer;
@@ -94,7 +95,7 @@ namespace MusicPlayer.Services
                     foreach (System.IO.DirectoryInfo dirInfo in subDirs)
                     {
                         // Resursive call for each subdirectory.
-                        Load(dirInfo, result);
+                        Load(dirInfo, result, lastSyncTime);
                     }
                 }
             }

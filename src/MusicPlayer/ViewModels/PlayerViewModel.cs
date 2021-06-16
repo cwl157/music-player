@@ -15,12 +15,13 @@ using MusicPlayer.Infrastructure;
 using System.Dynamic;
 using MusicPlayer.Services;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace MusicPlayer.ViewModels
 {
     public class PlayerViewModel : BindableBase
     {
-        private Timer _incrementPlayingProgress;
+        private System.Timers.Timer _incrementPlayingProgress;
        // private Timer _findSongEnd;
         private int _playingIndex;
         private readonly IMusicPlayer _player;
@@ -45,7 +46,7 @@ namespace MusicPlayer.ViewModels
             QueueInfo = "";
             _player = m;
             ElapsedTime = "00:00 / 00:00";
-            _incrementPlayingProgress = new Timer();
+            _incrementPlayingProgress = new System.Timers.Timer();
             _incrementPlayingProgress.Interval = 1000;
             // _currentQueue = new SongCollection(null);
             SongList = new ObservableCollection<Song>();
@@ -82,7 +83,7 @@ namespace MusicPlayer.ViewModels
 
             //AddToQueueCommand = new CommandHandler(() => AddToQueueAction(), () => true);
             ClearQueueCommand = new CommandHandler(() => ClearQueueAction(), () => true);
-            PlaySong = new CommandHandler(() => PlaySongAction(), () => true);
+            PlaySong = new CommandHandler(() => { if (IsDelay) { Thread.Sleep(8000); } PlaySongAction(); }, () => true);
             PauseSong = new CommandHandler(() => PauseSongAction(), () => true);
             StopSong = new CommandHandler(() => StopSongAction(), () => true);
             FastForwardCommand = new CommandHandler(() => FastForwardAction(), () => true);
@@ -361,22 +362,50 @@ namespace MusicPlayer.ViewModels
         }
         #endregion
 
+        private bool _isRepeat;
+        public bool IsRepeat
+        {
+            get { return _isRepeat; }
+            set
+            {
+                SetProperty(ref _isRepeat, value);
+            }
+        }
+
+        private bool _isDelay;
+        public bool IsDelay
+        {
+            get { return _isDelay; }
+            set
+            {
+                SetProperty(ref _isDelay, value);
+            }
+        }
+
         public void MediaEndedAction()
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-              //  if (_player.IsDone())
-              //  {
-                    if (++_playingIndex < SongList.Count)
-                    {
+                //  if (_player.IsDone())
+                //  {
+                if (++_playingIndex < SongList.Count)
+                {
 
-                        SelectedSong = SongList[_playingIndex];
+                    SelectedSong = SongList[_playingIndex];
+                    PlaySongAction();
+                }
+                else
+                {
+                    if (IsRepeat) // If repeat is selected, start over
+                    {
+                        SelectedSong = SongList[0];
                         PlaySongAction();
                     }
                     else
                     {
                         StopSongAction();
                     }
+                }
                // }
             });
         }

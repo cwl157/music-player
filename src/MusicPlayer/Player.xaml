@@ -42,7 +42,8 @@
         <Button x:Name="StopBtn" Content="Stop" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="134,0,0,0" VerticalAlignment="Center" FontSize="20" Command="{Binding StopSong}"/>
         <Button Content="&lt;&lt;" Command="{Binding RewindCommand}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="184,0,0,0" VerticalAlignment="Center" Height="32" FontSize="14" Width="24"/>
         <Button Content="&gt;&gt;" Command="{Binding FastForwardCommand}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="213,0,0,0" VerticalAlignment="Center" FontSize="14" Height="32"/>
-
+        <CheckBox Content="Repeat" IsChecked="{Binding IsRepeat}" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
+        <CheckBox Content="Delay" IsChecked="{Binding IsDelay}" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Margin="0,40,18,0" VerticalAlignment="Center"/>
         <ScrollViewer Grid.Row="0" Grid.RowSpan="2" Margin="0,60,0,0" Grid.Column="1">
             <TextBlock Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" x:Name="LyricsTxtBlock" TextWrapping="Wrap" Text="{Binding PlayingSong.Lyrics}" Height="auto"/>
         </ScrollViewer>

@@ -21,6 +21,7 @@ namespace MusicPlayer.ViewModels
         public LibraryViewModel LibraryViewModel { get; private set; }
         public SettingsViewModel SettingsViewModel { get; private set; }
         private List<Song> _songs;
+       // private DateTime _lastSyncTime;
         public event Action MediaEndedRequested = delegate { };
 
         public MainWindowViewModel(IMusicPlayer player)
