@@ -3,16 +3,17 @@ using MusicPlayer.Services;
 using NUnit.Framework.Constraints;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace MusicPlayer.Tests
 {
-    internal class QueueLoaderStub : IQueueLoader
+    internal class LibraryLoaderStub : ILibraryLoader
     {
-        public List<Song> Load(string path)
+        public void Load(DirectoryInfo root, List<Song> result, DateTime lastSyncTime)
         {
-            var tmp = new List<Song>();
-            tmp.Add(new Song()
+           // var tmp = new List<Song>();
+            result.Add(new Song()
             {
                 Artist = "Test",
                 Title = "Title",
@@ -22,7 +23,7 @@ namespace MusicPlayer.Tests
                 FilePath = @"C:\tmp\1",
                 Year = "2018"
             });
-            tmp.Add(new Song()
+            result.Add(new Song()
             {
                 Artist = "Test",
                 Title = "Title Two",
@@ -33,7 +34,7 @@ namespace MusicPlayer.Tests
                 Year = "2019"
             });
 
-            return tmp;
+           // return tmp;
         }
     }
 }

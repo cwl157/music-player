@@ -1,288 +1,102 @@
-﻿using MusicPlayer.Model;
+﻿using MusicPlayer.Infrastructure;
+using MusicPlayer.Model;
+using MusicPlayer.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows;
+using System.Text;
+using System.Text.Json;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using System.Timers;
-using MusicPlayer.Infrastructure;
-using System.Dynamic;
-using MusicPlayer.Services;
+using TagLib.Mpeg4;
 
 namespace MusicPlayer.ViewModels
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : BindableBase
     {
-        private Timer _incrementPlayingProgress;
-        private Timer _findSongEnd;
-        private int _playingIndex;
-        private readonly IMusicPlayer _player;
-        private SongCollection _currentQueue;
-        private double _seconds;
+        public PlayerViewModel PlayerViewModel { get; private set; }
+        public LibraryViewModel LibraryViewModel { get; private set; }
+        public SettingsViewModel SettingsViewModel { get; private set; }
+        private List<Song> _songs;
+       // private DateTime _lastSyncTime;
+        public event Action MediaEndedRequested = delegate { };
 
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        public ICommand AddToQueueCommand { get; private set; }
-        public ICommand ClearQueueCommand { get; private set; }
-        public ICommand PlaySong { get; private set; }
-        public ICommand PauseSong { get; private set; }
-        public ICommand StopSong { get; private set; }
-        public ICommand FastForwardCommand { get; private set; }
-        public ICommand RewindCommand { get; private set; }
-
-        public MainWindowViewModel(IMusicPlayer m, SongCollection collection)
+        public MainWindowViewModel(IMusicPlayer player)
         {
-            if (DesignerProperties.GetIsInDesignMode(
-                new System.Windows.DependencyObject())) return;
+            LoadSongs();
 
-            _seconds = 0;
+            PlayerViewModel = new PlayerViewModel(player);
+            LibraryViewModel = new LibraryViewModel(_songs);
+            ILibraryLoader loader = new FileLibraryLoader();
+            SettingsViewModel = new SettingsViewModel(loader);
+            LibraryViewModel.AddToQueueRequested += AddToPlayerQueue;
+            LibraryViewModel.ClearQueueRequested += ClearPlayerQueue;
+           // LibraryViewModel.SelectAlbumRequested += ShowSelectedAlbumSongList;
+            SettingsViewModel.RefreshLibraryRequested += SettingsViewModel_RefreshLibraryRequested;
+            //MediaEndedRequested += MainWindowViewModel_MediaEndedRequested;
+        }
 
-            _playingSong = new Song();
-            QueueInfo = "";
-            _player = m;
-            ElapsedTime = "00:00 / 00:00";
-            _incrementPlayingProgress = new Timer();
-            _incrementPlayingProgress.Interval = 1000;
-            _currentQueue = collection;
-            _incrementPlayingProgress.Elapsed += (sender, e) =>
+        public void MediaEnded()
+        {
+            PlayerViewModel.MediaEndedAction();
+        }
+
+        private void LoadSongs()
+        {
+            _songs = new List<Song>();
+            try
             {
-                _seconds += 1000;
-                PlayingProgress += 1000;
-
-                string displayProgress = TimeSpan.FromMilliseconds(_seconds).ToString("mm\\:ss");
-                ElapsedTime = displayProgress + " / " + PlayingSong.DisplayDuration;
-            };
-            _findSongEnd = new Timer();
-            _findSongEnd.Interval = 1;
-            _findSongEnd.Elapsed += (sender, e) =>
-            {
-                Application.Current.Dispatcher.Invoke(() =>
+                if (System.IO.File.Exists(@".\library.json"))
                 {
-                    if (_player.IsDone())
-                    {
-                        Debug.WriteLine("Done");
-                        if (++_playingIndex < _currentQueue.SongList.Count)
-                        {
-
-                            SelectedSong = _currentQueue.SongList[_playingIndex];
-                            PlaySongAction();
-                        }
-                        else
-                        {
-                            StopSongAction();
-                        }
-                    }
-                });
-            };
-
-            AddToQueueCommand = new CommandHandler(() => AddToQueueAction(), () => true);
-            ClearQueueCommand = new CommandHandler(() => ClearQueueAction(), () => true);
-            PlaySong = new CommandHandler(() => PlaySongAction(), () => true);
-            PauseSong = new CommandHandler(() => PauseSongAction(), () => true);
-            StopSong = new CommandHandler(() => StopSongAction(), () => true);
-            FastForwardCommand = new CommandHandler(() => FastForwardAction(), () => true);
-            RewindCommand = new CommandHandler(() => RewindAction(), () => true);
-        }
-
-        #region ViewBindedProperties
-        public string QueueFilePath { get; set; }
-        public ObservableCollection<Song> SongList { get { return _currentQueue.SongList; } }
-
-        private string _queueInfo;
-        public string QueueInfo
-        {
-            get { return _queueInfo; }
-            set
-            {
-                _queueInfo = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("QueueInfo"));
-            }
-        }
-
-        private string _artistAlbumInfo;
-        public string ArtistAlbumInfo {
-            get { return _artistAlbumInfo; }
-            set
-            {
-                _artistAlbumInfo = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("ArtistAlbumInfo"));
-            }
-        }
-
-        private string _trackTitleInfo;
-        public string TrackTitleInfo
-        {
-            get { return _trackTitleInfo; }
-            set
-            {
-                _trackTitleInfo = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("TrackTitleInfo"));
-            }
-        }
-
-        private Song _selectedSong;
-        public Song SelectedSong
-        {
-            get { return _selectedSong; }
-            set
-            {
-                _selectedSong = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("SelectedSong"));
-            }
-        }
-
-        private Song _playingSong;
-        public Song PlayingSong
-        {
-            get { return _playingSong; }
-            set
-            {
-                _playingSong = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("PlayingSong"));
-            }
-        }
-
-        private int _selectedIndex;
-        public int SelectedIndex
-        {
-            get { return _selectedIndex; }
-            set
-            {
-                _selectedIndex = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("SelectedIndex"));
-            }
-        }
-
-        private double _playingProgress;
-        public double PlayingProgress
-        {
-            get { return _playingProgress; }
-            set
-            {
-                _playingProgress = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("PlayingProgress"));
-            }
-        }
-
-        private string _elapsedTime;
-        public string ElapsedTime
-        {
-            get { return _elapsedTime; }
-            set
-            {
-                _elapsedTime = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("ElapsedTime"));
-            }
-        }
-
-        #endregion
-
-        #region CommandActions
-        private void AddToQueueAction()
-        {
-            _currentQueue.Load(QueueFilePath);
-
-            if (_currentQueue.SongList.Count > 0)
-            {
-                double queueDuration = _currentQueue.TotalSeconds();
-                string format = "hh\\:mm\\:ss";
-                if (queueDuration < 3600)
-                {
-                    format = "mm\\:ss";
+                    string songText = System.IO.File.ReadAllText(@".\library.json");
+                    var options = new JsonSerializerOptions { Converters = { new MusicPlayer.Infrastructure.TimeSpanConverter() } };
+                    _songs = JsonSerializer.Deserialize<List<Song>>(songText, options);
                 }
-                TimeSpan totalDuration = TimeSpan.FromSeconds(queueDuration);
-                QueueInfo = _currentQueue.SongList.Count + " songs - " + totalDuration.ToString(format);
+                else
+                {
+                    _songs.Add(new Song { Artist = "No library found. Please go to settings tab to configure your library" });
+                }
+            }
+            catch (Exception e)
+            {
+                _songs.Add(new Song { Artist = "Error loading library. Please go to settings tab and try refreshing the library", Album = e.Message });
             }
         }
 
-        private void ClearQueueAction()
+        private void SettingsViewModel_RefreshLibraryRequested(List<Song> obj)
         {
-            _currentQueue.SongList.Clear();
-            QueueInfo = "";
+            //  LoadSongs();
+            _songs = obj;
+            LibraryViewModel.Refresh(_songs);
         }
 
-        private void PlaySongAction()
+        private void AddToPlayerQueue()
         {
-            if (PlayingSong.FilePath != SelectedSong.FilePath)
+            if (LibraryViewModel.SelectedAlbum.ArtistNames.Count == 1)
             {
-                StopSongAction();
-                PlayingSong = SelectedSong;
-                _playingIndex = SelectedIndex;
-                ArtistAlbumInfo = PlayingSong.Artist + " - " + PlayingSong.Album + " [" + PlayingSong.Year + "]";
-                TrackTitleInfo = PlayingSong.TrackNumber + ". " + PlayingSong.Title;
-                _player.Play(new Uri(PlayingSong.FilePath));
+                IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString() && s.Artist == LibraryViewModel.SelectedAlbum.DisplayArtist);
+                PlayerViewModel.AddToQueue(songsToQueue);
             }
             else
             {
-                _player.Play();
-            }
-            StartTimers();
-        }
-
-        private void PauseSongAction()
-        {
-            StopTimers();
-            _player.Pause();
-        }
-
-        private void StopSongAction()
-        {
-            _player.Stop();
-            StopTimers();
-            PlayingProgress = 0;
-            _seconds = 0;
-            ElapsedTime = "00:00 / " + PlayingSong.DisplayDuration;
-        }
-
-        private void FastForwardAction()
-        {
-            _player.FastForward(10000);
-
-            _seconds += 10000;
-            PlayingProgress += 10000;
-
-            string displayProgress = TimeSpan.FromMilliseconds(_seconds).ToString("mm\\:ss");
-            ElapsedTime = displayProgress + " / " + PlayingSong.DisplayDuration;
-        }
-
-        private void RewindAction()
-        {
-            _player.Rewind(10000);
-            _seconds -= 10000;
-            PlayingProgress -= 10000;
-            if (_seconds < 0)
-            {
-                _seconds = 0;
+                IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString());
+                PlayerViewModel.AddToQueue(songsToQueue);
             }
 
-            if (PlayingProgress < 0)
-            {
-                PlayingProgress = 0;
-            }
-
-            string displayProgress = TimeSpan.FromMilliseconds(_seconds).ToString("mm\\:ss");
-            ElapsedTime = displayProgress + " / " + PlayingSong.DisplayDuration;
+            //IEnumerable<Song> songsToQueue = _songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString());            
         }
 
-        #endregion
-
-        #region TimerControls
-        private void StopTimers()
+        private void ClearPlayerQueue()
         {
-            _incrementPlayingProgress.Stop();
-            _findSongEnd.Stop();
+            PlayerViewModel.ClearQueueCommand.Execute(null);
         }
 
-        private void StartTimers()
-        {
-            _incrementPlayingProgress.Start();
-            _findSongEnd.Start();
-        }
-        #endregion
+        //private void ShowSelectedAlbumSongList()
+        //{
+        //    SongListViewModel.SongList = new ObservableCollection<Song>(_songs.Where(s => s.Album == LibraryViewModel.SelectedAlbum.Title && s.Year == LibraryViewModel.SelectedAlbum.Year.ToString()));
+        //}
     }
 }

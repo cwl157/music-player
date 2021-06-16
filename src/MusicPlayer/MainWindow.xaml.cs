@@ -1,12 +1,8 @@
-﻿using MusicPlayer.Model;
+﻿using MusicPlayer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,70 +10,67 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MusicPlayer.ViewModels;
-using MusicPlayer.Services;
 
 namespace MusicPlayer
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Window1.xaml
     /// </summary>
     public partial class MainWindow : Window, IMusicPlayer
     {
-        private MainWindowViewModel _vm;
+        private MainWindowViewModel _mainWindowvm;
         public MainWindow()
         {
             InitializeComponent();
-            Player.LoadedBehavior = MediaState.Manual;
-            IQueueLoader ql = new FileQueueLoader();
-            SongCollection collection = new SongCollection(ql);
-            _vm = new MainWindowViewModel(this, collection);
-            DataContext = _vm;
+            SongPlayer.LoadedBehavior = MediaState.Manual;
+            _mainWindowvm = new MainWindowViewModel(this);
+            DataContext = _mainWindowvm;
+            
         }
 
-        public void ListViewItem_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void SongPlayer_MediaEnded(object sender, RoutedEventArgs e)
         {
-            _vm.PlaySong.Execute(null);
+            _mainWindowvm.MediaEnded();
         }
 
         #region IMusicPlayer
+
         public void Play(Uri filePath)
         {
-            Player.Source = filePath;
-            Player.Play();
+            SongPlayer.Source = filePath;
+            SongPlayer.Play();
         }
 
         public void Play()
         {
-            Player.Play();
+            SongPlayer.Play();
         }
 
         public void Pause()
         {
-            Player.Pause();
+            SongPlayer.Pause();
         }
 
         public void Stop()
         {
-            Player.Stop();
-            
+            SongPlayer.Stop();
+
         }
 
         public void FastForward(double milliseconds)
         {
-            Player.Position += TimeSpan.FromMilliseconds(milliseconds);
+            SongPlayer.Position += TimeSpan.FromMilliseconds(milliseconds);
         }
-       
+
         public void Rewind(double milliseconds)
         {
-            Player.Position -= TimeSpan.FromMilliseconds(milliseconds);
+            SongPlayer.Position -= TimeSpan.FromMilliseconds(milliseconds);
         }
 
         public bool IsDone()
         {
-            return Player.Position >= Player.NaturalDuration;
+            return SongPlayer.Position >= SongPlayer.NaturalDuration;
         }
         #endregion
     }

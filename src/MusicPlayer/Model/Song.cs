@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using System.Windows.Media.Imaging;
 
 namespace MusicPlayer.Model
@@ -18,7 +19,9 @@ namespace MusicPlayer.Model
             }
         }
         public string Lyrics { get; set; }
-        public BitmapImage AlbumArt { get; set; }
         public string Year { get; set; } 
+        public string Comment { get; set; }
+
+        public DateTime DateAdded { get; set; }
     }
 }
