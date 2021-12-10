@@ -31,11 +31,12 @@ namespace MusicPlayer.ViewModels
             PlayerViewModel = new PlayerViewModel(player);
             LibraryViewModel = new LibraryViewModel(_songs);
             ILibraryLoader loader = new FileLibraryLoader();
-            SettingsViewModel = new SettingsViewModel(loader);
+            SettingsViewModel = new SettingsViewModel(loader, _songs);
             LibraryViewModel.AddToQueueRequested += AddToPlayerQueue;
             LibraryViewModel.ClearQueueRequested += ClearPlayerQueue;
            // LibraryViewModel.SelectAlbumRequested += ShowSelectedAlbumSongList;
             SettingsViewModel.RefreshLibraryRequested += SettingsViewModel_RefreshLibraryRequested;
+            SettingsViewModel.AddToLibraryRequested += SettingsViewModel_AddToLibraryRequested;
             //MediaEndedRequested += MainWindowViewModel_MediaEndedRequested;
         }
 
@@ -69,6 +70,12 @@ namespace MusicPlayer.ViewModels
         private void SettingsViewModel_RefreshLibraryRequested(List<Song> obj)
         {
             //  LoadSongs();
+            _songs = obj;
+            LibraryViewModel.Refresh(_songs);
+        }
+
+        private void SettingsViewModel_AddToLibraryRequested(List<Song> obj)
+        {
             _songs = obj;
             LibraryViewModel.Refresh(_songs);
         }

@@ -101,6 +101,117 @@ namespace MusicPlayer.Services
             }
         }
 
+        public void RefreshSongs(System.IO.DirectoryInfo root, List<Song> songs)
+        {
+            Debug.WriteLine("In AddSongs");
+
+            System.IO.FileInfo[] files = null;
+            System.IO.DirectoryInfo[] subDirs = null;
+
+            // First, process all the files directly under this folder
+            try
+            {
+                files = root.GetFiles("*.mp3");
+
+            }
+            // This is thrown if even one of the files requires permissions greater
+            // than the application provides.
+            catch (UnauthorizedAccessException e)
+            {
+                // This code just writes out the message and continues to recurse.
+                // You may decide to do something different here. For example, you
+                // can try to elevate your privileges and access the file again.
+                //log.Add(e.Message);
+            }
+
+            catch (System.IO.DirectoryNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            if (files != null)
+            {
+                if (files.Length > 0)
+                {
+                    foreach (System.IO.FileInfo fi in files)
+                    {
+                        //var x = new TagLib.Id3v2.Tag()
+                        // In this example, we only access the existing FileInfo object. If we
+                        // want to open, delete or modify the file, then
+                        // a try-catch block is required here to handle the case
+                        // where the file has been deleted since the call to TraverseTree().
+                        if (fi.Extension.ToLower() == ".mp3")
+                        {
+                            Song currentSong = songs.FirstOrDefault(s => s.FilePath == fi.FullName);
+                            if (currentSong == null)
+                            {
+                                var tfile = TagLib.File.Create(fi.FullName);
+                                Song s = new Song();
+                                s.Artist = tfile.Tag.FirstPerformer;
+                                s.Album = tfile.Tag.Album;
+                                s.Title = tfile.Tag.Title;
+                                s.TrackNumber = (int)tfile.Tag.Track;
+                                s.Duration = tfile.Properties.Duration;
+                                s.FilePath = fi.FullName;
+                                s.Lyrics = tfile.Tag.Lyrics;
+                                if (tfile.Tag.Comment == null)
+                                {
+                                    s.Comment = "";
+                                }
+                                else if (tfile.Tag.Comment.ToLower().Contains("various"))
+                                {
+                                    s.Comment = "various";
+                                }
+                                else
+                                {
+                                    s.Comment = "";
+                                }
+                                //s.Comment = tfile.Tag.Comment ?? tfile.Tag.Comment.ToLower().Contains("various") ? "various : "";
+                                //if (tfile.Tag.Pictures.Length > 0)
+                                //{
+                                //    s.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+                                //}
+                                s.Year = tfile.Tag.Year.ToString();
+                                s.DateAdded = fi.CreationTimeUtc;
+                                songs.Add(s);
+                            }
+                            else
+                            {
+                                var tfile = TagLib.File.Create(fi.FullName);
+                                // Song s = new Song();
+                                currentSong.Artist = tfile.Tag.FirstPerformer;
+                                currentSong.Album = tfile.Tag.Album;
+                                currentSong.Title = tfile.Tag.Title;
+                                currentSong.TrackNumber = (int)tfile.Tag.Track;
+                                currentSong.Duration = tfile.Properties.Duration;
+                                currentSong.FilePath = fi.FullName;
+                                currentSong.Lyrics = tfile.Tag.Lyrics;
+                                if (tfile.Tag.Comment == null)
+                                {
+                                    currentSong.Comment = "";
+                                }
+                                else if (tfile.Tag.Comment.ToLower().Contains("various"))
+                                {
+                                    currentSong.Comment = "various";
+                                }
+                                else
+                                {
+                                    currentSong.Comment = "";
+                                }
+                                //s.Comment = tfile.Tag.Comment ?? tfile.Tag.Comment.ToLower().Contains("various") ? "various : "";
+                                //if (tfile.Tag.Pictures.Length > 0)
+                                //{
+                                //    s.AlbumArt = LoadImage(tfile.Tag.Pictures[0].Data.Data);
+                                //}
+                                currentSong.Year = tfile.Tag.Year.ToString();
+                                currentSong.DateAdded = fi.CreationTimeUtc;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         //public List<Song> Load(string filepath)
         //{
         //    DirectoryInfo dir = new DirectoryInfo(filepath);

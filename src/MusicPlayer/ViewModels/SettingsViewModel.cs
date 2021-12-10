@@ -17,12 +17,15 @@ namespace MusicPlayer.ViewModels
     {
         private ILibraryLoader _loader;
         private DateTime _lastSyncTime;
+        private List<Song> _songs;
 
         public event Action<List<Song>> RefreshLibraryRequested = delegate { };
+        public event Action<List<Song>> AddToLibraryRequested = delegate { };
         public string LibraryFolderPath { get; set; }
 
-        public SettingsViewModel(ILibraryLoader loader)
+        public SettingsViewModel(ILibraryLoader loader, List<Song> s)
         {
+            _songs = s;
             if (System.IO.File.Exists(@".\lastSync.json"))
             {
                 string lastSyncText = System.IO.File.ReadAllText(@".\lastSync.json");
@@ -36,6 +39,7 @@ namespace MusicPlayer.ViewModels
 
             RefreshStatus = "Not Started";
             RefreshLibrary = new CommandHandler(() => RefreshLibraryAction(), () => true);
+            AddToLibrary = new CommandHandler(() => AddToLibraryAction(), () => true);
             _loader = loader;
         }
 
@@ -47,6 +51,7 @@ namespace MusicPlayer.ViewModels
         }
 
         public ICommand RefreshLibrary { get; private set; }
+        public ICommand AddToLibrary { get; private set; }
 
         private void RefreshLibraryAction()
         {
@@ -73,6 +78,33 @@ namespace MusicPlayer.ViewModels
                     RefreshLibraryRequested(songs);
                 }
             });            
+        }
+
+        private void AddToLibraryAction()
+        {
+            RefreshStatus = "Adding Songs...";
+            Task.Run(() =>
+            {
+                if (string.IsNullOrEmpty(LibraryFolderPath) || !Directory.Exists(LibraryFolderPath))
+                {
+                    RefreshStatus = "Invalid directory";
+                }
+                else
+                {
+                    _loader.RefreshSongs(new DirectoryInfo(LibraryFolderPath), _songs);
+                    //_loader.Load(new DirectoryInfo(LibraryFolderPath), songs, _lastSyncTime);
+
+                    var options = new JsonSerializerOptions { Converters = { new TimeSpanConverter() } };
+                    string result = JsonSerializer.Serialize(_songs, options);
+                    File.WriteAllText(@".\library.json", result);
+                    _lastSyncTime = DateTime.Now;
+                    string lastTime = JsonSerializer.Serialize(_lastSyncTime, options);
+                    File.WriteAllText(@".\lastsync.json", lastTime);
+                    // DateTime n = new DateTime("Thursday, 10 June 2021 20:33:49")
+                    RefreshStatus = "Addings Songs Complete";
+                    RefreshLibraryRequested(_songs);
+                }
+            });
         }
     }
 }
