@@ -66,7 +66,7 @@ namespace MusicPlayer.ViewModels
                 else
                 {
                     _loader.Load(new DirectoryInfo(LibraryFolderPath), songs, _lastSyncTime);
-
+                    _songs = songs;
                     var options = new JsonSerializerOptions { Converters = { new TimeSpanConverter() } };
                     string result = JsonSerializer.Serialize(songs, options);
                     File.WriteAllText(@".\library.json", result);
@@ -102,7 +102,7 @@ namespace MusicPlayer.ViewModels
                     File.WriteAllText(@".\lastsync.json", lastTime);
                     // DateTime n = new DateTime("Thursday, 10 June 2021 20:33:49")
                     RefreshStatus = "Addings Songs Complete";
-                    RefreshLibraryRequested(_songs);
+                    AddToLibraryRequested(_songs);
                 }
             });
         }

@@ -45,6 +45,7 @@ namespace MusicPlayer.Services
             {
                 if (files.Length > 0)
                 {
+                    Guid id = Guid.NewGuid();
                     foreach (System.IO.FileInfo fi in files)
                     {
                         //var x = new TagLib.Id3v2.Tag()
@@ -57,6 +58,7 @@ namespace MusicPlayer.Services
 
                             var tfile = TagLib.File.Create(fi.FullName);
                             Song s = new Song();
+                            s.Id = id;
                             s.Artist = tfile.Tag.FirstPerformer;
                             s.Album = tfile.Tag.Album;
                             s.Title = tfile.Tag.Title;
@@ -64,18 +66,18 @@ namespace MusicPlayer.Services
                             s.Duration = tfile.Properties.Duration;
                             s.FilePath = fi.FullName;
                             s.Lyrics = tfile.Tag.Lyrics;
-                            if (tfile.Tag.Comment == null)
-                            {
-                                s.Comment = "";
-                            }
-                            else if (tfile.Tag.Comment.ToLower().Contains("various"))
-                            {
-                                s.Comment = "various";
-                            }
-                            else
-                            {
-                                s.Comment = "";
-                            }
+                            //if (tfile.Tag.Comment == null)
+                            //{
+                            //    s.Comment = "";
+                            //}
+                            //else if (tfile.Tag.Comment.ToLower().Contains("various"))
+                            //{
+                            //    s.Comment = "various";
+                            //}
+                            //else
+                            //{
+                            //    s.Comment = "";
+                            //}
                             //s.Comment = tfile.Tag.Comment ?? tfile.Tag.Comment.ToLower().Contains("various") ? "various : "";
                             //if (tfile.Tag.Pictures.Length > 0)
                             //{
@@ -133,6 +135,7 @@ namespace MusicPlayer.Services
             {
                 if (files.Length > 0)
                 {
+                    Guid id = Guid.NewGuid();
                     foreach (System.IO.FileInfo fi in files)
                     {
                         //var x = new TagLib.Id3v2.Tag()
@@ -147,6 +150,7 @@ namespace MusicPlayer.Services
                             {
                                 var tfile = TagLib.File.Create(fi.FullName);
                                 Song s = new Song();
+                                s.Id = id;
                                 s.Artist = tfile.Tag.FirstPerformer;
                                 s.Album = tfile.Tag.Album;
                                 s.Title = tfile.Tag.Title;
@@ -154,18 +158,18 @@ namespace MusicPlayer.Services
                                 s.Duration = tfile.Properties.Duration;
                                 s.FilePath = fi.FullName;
                                 s.Lyrics = tfile.Tag.Lyrics;
-                                if (tfile.Tag.Comment == null)
-                                {
-                                    s.Comment = "";
-                                }
-                                else if (tfile.Tag.Comment.ToLower().Contains("various"))
-                                {
-                                    s.Comment = "various";
-                                }
-                                else
-                                {
-                                    s.Comment = "";
-                                }
+                                //if (tfile.Tag.Comment == null)
+                                //{
+                                //    s.Comment = "";
+                                //}
+                                //else if (tfile.Tag.Comment.ToLower().Contains("various"))
+                                //{
+                                //    s.Comment = "various";
+                                //}
+                                //else
+                                //{
+                                //    s.Comment = "";
+                                //}
                                 //s.Comment = tfile.Tag.Comment ?? tfile.Tag.Comment.ToLower().Contains("various") ? "various : "";
                                 //if (tfile.Tag.Pictures.Length > 0)
                                 //{
@@ -186,18 +190,18 @@ namespace MusicPlayer.Services
                                 currentSong.Duration = tfile.Properties.Duration;
                                 currentSong.FilePath = fi.FullName;
                                 currentSong.Lyrics = tfile.Tag.Lyrics;
-                                if (tfile.Tag.Comment == null)
-                                {
-                                    currentSong.Comment = "";
-                                }
-                                else if (tfile.Tag.Comment.ToLower().Contains("various"))
-                                {
-                                    currentSong.Comment = "various";
-                                }
-                                else
-                                {
-                                    currentSong.Comment = "";
-                                }
+                                //if (tfile.Tag.Comment == null)
+                                //{
+                                //    currentSong.Comment = "";
+                                //}
+                                //else if (tfile.Tag.Comment.ToLower().Contains("various"))
+                                //{
+                                //    currentSong.Comment = "various";
+                                //}
+                                //else
+                                //{
+                                //    currentSong.Comment = "";
+                                //}
                                 //s.Comment = tfile.Tag.Comment ?? tfile.Tag.Comment.ToLower().Contains("various") ? "various : "";
                                 //if (tfile.Tag.Pictures.Length > 0)
                                 //{

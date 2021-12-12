@@ -302,25 +302,31 @@ namespace MusicPlayer.ViewModels
             _allAlbums.Clear();
 
             // Distinct should be only by album, year and artist with comment added
-            var albumNames = songs.Select(s => new { Title = s.Album, Year = s.Year, Artist = s.Artist, Comment = s.Comment }).Distinct();
+            var albumNames = songs.Select(s => new { Title = s.Album, Year = s.Year, Artist = s.Artist, Id = s.Id }).Distinct();
 
             albumNames = albumNames.OrderByDescending(a => a.Year);
             foreach (var name in albumNames)
             {
-                if (name.Comment.ToLower().Contains("various"))
+                var albumAdded = _allAlbums.FirstOrDefault(a => a.Id == name.Id);
+                if (albumAdded != null)
                 {
-                    var albumAdded = _allAlbums.FirstOrDefault(a => a.Title == name.Title && a.Year.ToString() == name.Year);
-                    if (albumAdded != null)
-                    {
-                        continue;
-                    }
+                    continue;
                 }
+                //if (name.Comment.ToLower().Contains("various"))
+                // {
+                //     var albumAdded = _allAlbums.FirstOrDefault(a => a.Title == name.Title && a.Year.ToString() == name.Year);
+                //     if (albumAdded != null)
+                //     {
+                //        continue;
+                //    }
+                // }
 
-                var ss = songs.Where(t => t.Album == name.Title && t.Year == name.Year && t.Artist == name.Artist);
-                if (name.Comment.ToLower().Contains("various"))
-                {
-                    ss = songs.Where(t => t.Album == name.Title && t.Year == name.Year);
-                }
+                //var ss = songs.Where(t => t.Album == name.Title && t.Year == name.Year && t.Artist == name.Artist);
+                var ss = songs.Where(t => t.Id == name.Id);
+                //if (name.Comment.ToLower().Contains("various"))
+               // {
+               //     ss = songs.Where(t => t.Album == name.Title && t.Year == name.Year);
+               // }
 
                 
                 var newAlbum = new Album();
@@ -341,6 +347,7 @@ namespace MusicPlayer.ViewModels
                     //{
                     //    // TODO: error handling and logging
                     //}
+                    newAlbum.Id = firstSong.Id;
                     newAlbum.DateAdded = firstSong.DateAdded;
                 }
                 int outYear = 0;
