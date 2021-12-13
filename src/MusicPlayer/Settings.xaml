@@ -13,10 +13,10 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        <Label Content="Folder Path to Media Library:" HorizontalAlignment="Left" Margin="20,30,0,0" VerticalAlignment="Top"/>
+        <Label Content="Folder path to library or album:" HorizontalAlignment="Left" Margin="15,30,0,0" VerticalAlignment="Top"/>
         <TextBox Text="{Binding LibraryFolderPath}"  HorizontalAlignment="Left" Margin="187,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="205"/>
         <Button Content="Refresh Library" Command="{Binding RefreshLibrary}" HorizontalAlignment="Left" Margin="400,33,0,0" VerticalAlignment="Top"/>
-        <Button Content="Refresh Songs" Command="{Binding AddToLibrary}" HorizontalAlignment="Left" Margin="400,64,0,0" VerticalAlignment="Top"/>
+        <Button Content="Refresh Album" Command="{Binding RefreshAlbum}" HorizontalAlignment="Left" Margin="400,64,0,0" VerticalAlignment="Top"/>
         <Label Content="{Binding RefreshStatus}" HorizontalAlignment="Left" Margin="506,30,0,0" VerticalAlignment="Top"/>
 
     </Grid>

@@ -20,7 +20,7 @@ namespace MusicPlayer.ViewModels
         private List<Song> _songs;
 
         public event Action<List<Song>> RefreshLibraryRequested = delegate { };
-        public event Action<List<Song>> AddToLibraryRequested = delegate { };
+        public event Action<List<Song>> RefreshAlbumRequested = delegate { };
         public string LibraryFolderPath { get; set; }
 
         public SettingsViewModel(ILibraryLoader loader, List<Song> s)
@@ -39,7 +39,7 @@ namespace MusicPlayer.ViewModels
 
             RefreshStatus = "Not Started";
             RefreshLibrary = new CommandHandler(() => RefreshLibraryAction(), () => true);
-            AddToLibrary = new CommandHandler(() => AddToLibraryAction(), () => true);
+            RefreshAlbum = new CommandHandler(() => RefreshAlbumAction(), () => true);
             _loader = loader;
         }
 
@@ -51,7 +51,7 @@ namespace MusicPlayer.ViewModels
         }
 
         public ICommand RefreshLibrary { get; private set; }
-        public ICommand AddToLibrary { get; private set; }
+        public ICommand RefreshAlbum { get; private set; }
 
         private void RefreshLibraryAction()
         {
@@ -80,7 +80,7 @@ namespace MusicPlayer.ViewModels
             });            
         }
 
-        private void AddToLibraryAction()
+        private void RefreshAlbumAction()
         {
             RefreshStatus = "Adding Songs...";
             Task.Run(() =>
@@ -102,7 +102,7 @@ namespace MusicPlayer.ViewModels
                     File.WriteAllText(@".\lastsync.json", lastTime);
                     // DateTime n = new DateTime("Thursday, 10 June 2021 20:33:49")
                     RefreshStatus = "Addings Songs Complete";
-                    AddToLibraryRequested(_songs);
+                    RefreshAlbumRequested(_songs);
                 }
             });
         }
